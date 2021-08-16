@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import "./slider.css";
 
-export const Slider = (props: { width: number, onChangePercentage: Function }) => {
+export const Slider = (props: { size: { width: number, height: number }, onChangePercentage: Function }) => {
     let sliderRef = useRef<HTMLDivElement>(null);
     let [sliderPos, setSliderPos] = useState(0);
 
-    useEffect(() => props.onChangePercentage(sliderPos / props.width), [sliderPos]);
+    useEffect(() => props.onChangePercentage(sliderPos), [sliderPos]);
 
     let changeKnobPos = (pointerPos: [number, number]) => {
         let rect = sliderRef.current!.getBoundingClientRect(); // get color picker global position
@@ -13,7 +13,7 @@ export const Slider = (props: { width: number, onChangePercentage: Function }) =
         // check overflow
         if (x < rect.left) x = rect.left;
         else if (x > rect.right) x = rect.right;
-        setSliderPos(x - rect.left);
+        setSliderPos((x - rect.left) / props.size.width);
     }
 
     let onDown = (pos: [number, number], changeKnobPos: Function) => {
@@ -28,9 +28,11 @@ export const Slider = (props: { width: number, onChangePercentage: Function }) =
     }
 
     return (
-        <div ref={ sliderRef } className="slider" style={ { width: props.width } }
+        <div ref={ sliderRef } className="slider no_highlight" style={ { width: props.size.width, height: props.size.height } }
             onPointerDown={ (e: React.PointerEvent<HTMLDivElement>) => onDown([e.clientX, e.clientY], changeKnobPos) }>
-            <div className="slider-bar">
+            <div className="slider-bar bg_grey_1" />
+            <div className="slider-position" style={ { left: `${sliderPos * 100}%` } }>
+                <div className="silder-knob bg_sec_tint" />
             </div>
         </div>
     )

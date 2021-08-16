@@ -17,7 +17,7 @@ export class SliderPage extends React.Component<{}, { percentage: number }> {
             <div id="slider-page">
                 <div className="f_24">Slider</div>
                 <div className="f_16">{ this.state.percentage }</div>
-                <Slider width={ 400 } onChangePercentage={ this.onChangePercentage.bind(this) } />
+                <Slider size={ { width: 400, height: 40 } } onChangePercentage={ this.onChangePercentage.bind(this) } />
             </div>
         )
     }
