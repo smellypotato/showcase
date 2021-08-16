@@ -3,7 +3,7 @@
     grid-row-gap: 40px;
     margin-top: -40px;
 }
-.color-picker-container {
+.color-picker-panel {
     position: relative;
     display: flex;
     justify-content: center;
@@ -11,12 +11,6 @@
     aspect-ratio: 1 / 1;
     background-color: #FFF;
     /* overflow: hidden; */
-    /* padding: 20%; */
-}
-.color-picker-panel {
-    /* width: 100%; */
-    aspect-ratio: 1 / 1;
-    background: linear-gradient(#FFFFFF, #000000), linear-gradient(to right, #FFFFFF, #FF0000);
     background-blend-mode: multiply;
 }
 .color-picker-indicator {
@@ -32,4 +26,28 @@
     width: 100%;
     height: 40px;
     background: linear-gradient(to right, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF, #FF0000);
+    position: relative;
+}
+.color-picker-max-color-picker {
+    position: absolute;
+    width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.color-picker-max-color-picker > div {
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+}
+.color-picker-max-color-picker > div:first-child {
+    border-top: 7px solid #000000;
+    transform: translate(-50%, -50%);
+}
+.color-picker-max-color-picker > div:last-child {
+    border-bottom: 7px solid #000000;
+    transform: translate(-50%, 50%);
 }

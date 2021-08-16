@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./colorPicker.css";
 
 export interface RGB {
@@ -14,29 +14,47 @@ const maxColors: Array<RGB> = [
     { R: 0, G: 255, B: 255 },
     { R: 0, G: 0, B: 255 },
     { R: 255, G: 0, B: 255 },
+    { R: 255, G: 0, B: 0 },
     { R: 255, G: 0, B: 0 }
 ]
 
 export const ColorPicker = (props: { size: number, onChangeColor: Function }) => {
-    let currentMaxColor: RGB = { R: 255, G: 0, B: 0 };
+    let colorPickerPanel = useRef<HTMLDivElement>(null);
+    let maxColorPickerPanel = useRef<HTMLDivElement>(null);
 
-    let [pickerPos, setPickerPos] = useState({ left: 0, top: 0 });
-    let [color, setColor] = useState({ R: 0, G: 0, B: 0 });
+    let [maxPickerPos, setMaxPickerPos] = useState(0);
+    let [maxColor, setMaxColor] = useState<RGB>({ R:255, G: 0, B: 0 });
+    let [pickerPos, setPickerPos] = useState<{ left: number, top: number}>({ left: 0, top: 0 });
+    let [color, setColor] = useState<RGB>({ R: 0, G: 0, B: 0 });
 
     useEffect(() => {
         setColor({
-            R: getColorChannel(ColorChannel.R, currentMaxColor),
-            G: getColorChannel(ColorChannel.G, currentMaxColor),
-            B: getColorChannel(ColorChannel.B, currentMaxColor)
+            R: getColorChannel(ColorChannel.R, maxColor),
+            G: getColorChannel(ColorChannel.G, maxColor),
+            B: getColorChannel(ColorChannel.B, maxColor)
         })
-    }, [pickerPos]);
+    }, [pickerPos, maxColor]);
 
-    useEffect(() => props.onChangeColor(color), [color]);
+    useEffect(() => props.onChangeColor(rgb2hex(color)), [color]);
+
+    useEffect(() => {
+        setMaxColor({
+            R: getMaxColorChannel(ColorChannel.R),
+            G: getMaxColorChannel(ColorChannel.G),
+            B: getMaxColorChannel(ColorChannel.B)
+        })
+    }, [maxPickerPos]);
 
     let lerp = (start: number, end: number, ratio: number) => {
         return start + (ratio - 0) * (end - start) / (1 - 0);
     }
 
+    let rgb2hex = (rgb: RGB): string => {
+        let RR = rgb.R.toString(16).toUpperCase().padStart(2, "0");
+        let GG = rgb.G.toString(16).toUpperCase().padStart(2, "0");
+        let BB = rgb.B.toString(16).toUpperCase().padStart(2, "0");
+        return `#${RR}${GG}${BB}`;
+    }
 
     let getColorChannel = (channel: ColorChannel, maxColor: RGB) => {
         let maxColor2White = lerp(255, maxColor[channel], pickerPos.left / props.size);
@@ -50,9 +68,17 @@ export const ColorPicker = (props: { size: number, onChangeColor: Function }) =>
         return Math.round(finalColor);
     }
 
+    let getMaxColorChannel = (channel: ColorChannel) => {
+        let ratio: number = maxPickerPos / props.size;
+        let indexLength: number = 1 / (maxColors.length - 2);
+        let maxColorIndex = Math.floor(ratio / indexLength);
+        let normalizedRatio = ratio / indexLength - maxColorIndex;
+        let finalColor = lerp(maxColors[maxColorIndex][channel], maxColors[maxColorIndex + 1][channel], normalizedRatio);
+        return Math.round(finalColor);
+    }
+
     let changePickerPos = (e: React.PointerEvent<HTMLDivElement> | PointerEvent) => {
-        let rect = e.currentTarget!.getBoundingClientRect(); // get color picker global position
-        console.log(e.currentTarget!.getBoundingClientRect());
+        let rect = colorPickerPanel.current!.getBoundingClientRect(); // get color picker global position
         let [x, y] = [e.clientX, e.clientY]; // get pointer global position
         // check overflow
         if (x < rect.left) x = rect.left;
@@ -62,7 +88,16 @@ export const ColorPicker = (props: { size: number, onChangeColor: Function }) =>
         setPickerPos({ left: x - rect.left, top: y - rect.top });
     }
 
-    let onDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    let changeMaxPickerPos = (e: React.PointerEvent<HTMLDivElement> | PointerEvent) => {
+        let rect = maxColorPickerPanel.current!.getBoundingClientRect(); // get color picker global position
+        let x = e.clientX; // get pointer global position
+        // check overflow
+        if (x < rect.left) x = rect.left;
+        else if (x > rect.right) x = rect.right;
+        setMaxPickerPos(x - rect.left);
+    }
+
+    let onDown = (e: React.PointerEvent<HTMLDivElement>, changePickerPos: Function) => {
         changePickerPos(e);
         let move = (e: React.PointerEvent<HTMLDivElement> | PointerEvent) => changePickerPos(e);
         let up = () => {
@@ -75,13 +110,18 @@ export const ColorPicker = (props: { size: number, onChangeColor: Function }) =>
 
     return (
         <div className="color-picker">
-            <div className='color-picker-container' style={ {
-                width: `${props.size}px`
-            } } onPointerDown={ onDown }>
-                <div className="color-picker-panel no_highlight" style={ { width: `${props.size}px` } }/>
-                <div className="color-picker-indicator no_highlight" style={ { left: pickerPos.left, top: pickerPos.top, borderColor: `rgb(${getInvertedColorChannel(ColorChannel.R, currentMaxColor)}, ${getInvertedColorChannel(ColorChannel.G, currentMaxColor)}, ${getInvertedColorChannel(ColorChannel.B, currentMaxColor)}` } }/>
+            <div ref={ colorPickerPanel } className='color-picker-panel no_highlight' style={ {
+                width: `${props.size}px`,
+                background: `linear-gradient(#FFFFFF, #000000), linear-gradient(to right, #FFFFFF, ${rgb2hex(maxColor)})`
+            } } onPointerDown={ (e) => onDown(e, changePickerPos) }>
+                <div className="color-picker-indicator no_highlight" style={ { left: pickerPos.left, top: pickerPos.top, borderColor: `rgb(${getInvertedColorChannel(ColorChannel.R, maxColor)}, ${getInvertedColorChannel(ColorChannel.G, maxColor)}, ${getInvertedColorChannel(ColorChannel.B, maxColor)}` } }/>
             </div>
-            <div className="color-picker-max-color-selector" />
+            <div ref={ maxColorPickerPanel } className="color-picker-max-color-selector" onPointerDown={ (e) => onDown(e, changeMaxPickerPos) }>
+                <div className="color-picker-max-color-picker" style={ { left: maxPickerPos } }>
+                    <div />
+                    <div />
+                </div>
+            </div>
         </div>
     )
 }

@@ -1,14 +1,14 @@
 import React from "react";
-import { ColorPicker, RGB } from "./colorPicker";
+import { ColorPicker } from "./colorPicker";
 import "./colorPickerPage.css";
 
 export class ColorPickerPage extends React.Component<{}, { backgroundColor: string }> {
     state = {
-        backgroundColor: "rgb(255, 255, 255)"
+        backgroundColor: "#FFFFFF"
     }
 
-    onChangeColor(color: RGB) {
-        this.setState({ backgroundColor: `rgb(${color.R}, ${color.G}, ${color.B})`});
+    onChangeColor(color: string) {
+        this.setState({ backgroundColor: color});
     }
 
     render() {
