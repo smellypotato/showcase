@@ -77,9 +77,9 @@ export const ColorPicker = (props: { size: number, onChangeColor: Function }) =>
         return Math.round(finalColor);
     }
 
-    let changePickerPos = (e: React.PointerEvent<HTMLDivElement> | PointerEvent) => {
+    let changePickerPos = (pointerPos: [number, number]) => {
         let rect = colorPickerPanel.current!.getBoundingClientRect(); // get color picker global position
-        let [x, y] = [e.clientX, e.clientY]; // get pointer global position
+        let [x, y] = pointerPos; // get pointer global position
         // check overflow
         if (x < rect.left) x = rect.left;
         else if (x > rect.right) x = rect.right;
@@ -88,18 +88,18 @@ export const ColorPicker = (props: { size: number, onChangeColor: Function }) =>
         setPickerPos({ left: x - rect.left, top: y - rect.top });
     }
 
-    let changeMaxPickerPos = (e: React.PointerEvent<HTMLDivElement> | PointerEvent) => {
+    let changeMaxPickerPos = (pointerPos: [number, number]) => {
         let rect = maxColorPickerPanel.current!.getBoundingClientRect(); // get color picker global position
-        let x = e.clientX; // get pointer global position
+        let x = pointerPos[0]; // get pointer global position
         // check overflow
         if (x < rect.left) x = rect.left;
         else if (x > rect.right) x = rect.right;
         setMaxPickerPos(x - rect.left);
     }
 
-    let onDown = (e: React.PointerEvent<HTMLDivElement>, changePickerPos: Function) => {
-        changePickerPos(e);
-        let move = (e: React.PointerEvent<HTMLDivElement> | PointerEvent) => changePickerPos(e);
+    let onDown = (pointerPos: [number, number], changePickerPos: Function) => {
+        changePickerPos(pointerPos);
+        let move = (e: PointerEvent) => changePickerPos([e.clientX, e.clientY]);
         let up = () => {
             document.body.removeEventListener("pointermove", move);
             document.body.removeEventListener("pointerup", up);
@@ -113,10 +113,10 @@ export const ColorPicker = (props: { size: number, onChangeColor: Function }) =>
             <div ref={ colorPickerPanel } className='color-picker-panel no_highlight' style={ {
                 width: `${props.size}px`,
                 background: `linear-gradient(#FFFFFF, #000000), linear-gradient(to right, #FFFFFF, ${rgb2hex(maxColor)})`
-            } } onPointerDown={ (e) => onDown(e, changePickerPos) }>
+            } } onPointerDown={ (e: React.PointerEvent<HTMLDivElement>) => onDown([e.clientX, e.clientY], changePickerPos) }>
                 <div className="color-picker-indicator no_highlight" style={ { left: pickerPos.left, top: pickerPos.top, borderColor: `rgb(${getInvertedColorChannel(ColorChannel.R, maxColor)}, ${getInvertedColorChannel(ColorChannel.G, maxColor)}, ${getInvertedColorChannel(ColorChannel.B, maxColor)}` } }/>
             </div>
-            <div ref={ maxColorPickerPanel } className="color-picker-max-color-selector" onPointerDown={ (e) => onDown(e, changeMaxPickerPos) }>
+            <div ref={ maxColorPickerPanel } className="color-picker-max-color-selector" onPointerDown={ (e: React.PointerEvent<HTMLDivElement>) => onDown([e.clientX, e.clientY], changeMaxPickerPos) }>
                 <div className="color-picker-max-color-picker" style={ { left: maxPickerPos } }>
                     <div />
                     <div />
