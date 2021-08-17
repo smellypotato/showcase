@@ -1,0 +1,20 @@
+#range-slider-page {
+    height: 100vh;
+    padding: 5vh 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 40px;
+}
+#range-slider-page-slider {
+    width: 40vw;
+    height: 30px;
+}
+.range-slider-page-slider-bar {
+    border-radius: 4px;
+    height: 30%;
+}
+.range-slider-page-slider-knob {
+    width: 15px;
+    border-radius: 6px;
+}
