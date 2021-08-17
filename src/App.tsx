@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ColorPickerPage } from './components/colorPicker/colorPickerPage';
 import { Home } from './components/home/home';
+import { IntervalSliderPage } from './components/intervalSlider/intervalSliderPage';
 import { SliderPage } from './components/slider/sliderPage';
 
 export default class App extends React.Component<{}, {}> {
@@ -12,6 +13,7 @@ export default class App extends React.Component<{}, {}> {
                     <Switch>
                         <Route exact path="/color-picker"><ColorPickerPage /></Route>
                         <Route exact path="/slider"><SliderPage /></Route>
+                        <Route exact path="/interval-slider"><IntervalSliderPage /></Route>
                         <Route path="/"><Home /></Route>
                     </Switch>
                 </BrowserRouter>

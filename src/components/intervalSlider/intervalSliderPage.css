@@ -1,0 +1,20 @@
+#interval-slider-page {
+    height: 100vh;
+    padding: 5vh 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 40px;
+}
+#interval-slider-page-slider {
+    width: 40vw;
+    height: 30px;
+}
+.interval-slider-page-slider-bar {
+    border-radius: 1px;
+    height: 10px;
+}
+.interval-slider-page-slider-knob {
+    width: 5px;
+    border-radius: 1px;
+}
