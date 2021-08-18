@@ -20,19 +20,21 @@ export class RangeSliderPage extends React.Component<{}, { minPercentage: number
         return (
             <div id="range-slider-page">
                 <div className="f_24">Range Slider</div>
-                <div className="f_16">{ this.state.minPercentage } { this.state.maxPercentage }</div>
+                <div className="f_16">{ this.state.minPercentage } - { this.state.maxPercentage }</div>
                 <div id="range-slider-page-slider">
                     <RangeSlider
-                        sliderBarClass="range-slider-page-slider-bar bg_sec_shade_2"
-                        sliderFillClass="bg_grey_2"
-                        sliderKnobClass="range-slider-page-slider-knob bg_sec_tint"
+                        barColor="#C1C9CD"
+                        fillColor="#927DA4"
+                        barClass="range-slider-page-slider-bar"
+                        minKnobClass="range-slider-page-slider-knob bg_red"
+                        maxKnobClass="range-slider-page-slider-knob bg_blue"
+                        stopOnOverlap={ true }
                         onChangeMinPercentage={ this.onChangeMinPercentage.bind(this) }
                         onChangeMaxPercentage={ this.onChangeMaxPercentage.bind(this) }
                     />
                 </div>
-                <div>
-                    knob height follows slider height; slider bar height independent
-                </div>
+                <div>knob height follows slider height; slider bar height independent</div>
+                <div>color style separated from class</div>
             </div>
         )
     }

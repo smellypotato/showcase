@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import "./rangeSlider.css";
 
-export const RangeSlider = (props: { sliderBarClass: string, sliderFillClass: string, sliderKnobClass: string, onChangeMinPercentage: Function, onChangeMaxPercentage: Function }) => {
+export const RangeSlider = (props: { barColor: string, fillColor: string, barClass: string, minKnobClass: string, maxKnobClass: string, stopOnOverlap: boolean, onChangeMinPercentage: Function, onChangeMaxPercentage: Function }) => {
     let sliderRef = useRef<HTMLDivElement>(null);
-    let [minSliderPos, setMinSliderPos] = useState(0);
-    let [maxSliderPos, setMaxSliderPos] = useState(1);
+    let knobRef: [React.RefObject<HTMLDivElement>, React.RefObject<HTMLDivElement>] = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
+    let [minKnobPos, setminKnobPos] = useState(0);
+    let [maxKnobPos, setmaxKnobPos] = useState(1);
+    let [activeKnob, setActiveKnob] = useState(-1); // for setting z-Index
     let movingKnob = -1; //no need state, will reset anyway
 
-    useEffect(() => {
-        props.onChangeMinPercentage(minSliderPos);
-        props.onChangeMaxPercentage(maxSliderPos);
-    }, [minSliderPos, maxSliderPos]);
+    useEffect(() => props.onChangeMinPercentage(minKnobPos), [minKnobPos]);
+    useEffect(() => props.onChangeMaxPercentage(maxKnobPos), [maxKnobPos]);
+
+    let float2Decimal = (value: number, decimal: number) => parseFloat(value.toFixed(decimal));
 
     let changeKnobPos = (pointerPos: [number, number]) => {
         let rect = sliderRef.current!.getBoundingClientRect(); // get color picker global position
@@ -19,24 +21,30 @@ export const RangeSlider = (props: { sliderBarClass: string, sliderFillClass: st
         if (x < rect.left) x = rect.left;
         else if (x > rect.right) x = rect.right;
         let newPos = (x - rect.left) / rect.width;
-        switch (movingKnob) {
-            case 0 :
-                setMinSliderPos(newPos);
-            break;
-            case 1:
-                setMaxSliderPos(newPos);
-            break;
+        let otherKnob = (movingKnob + 1) % 2;
+        let otherKnobRect = knobRef[otherKnob].current!.getBoundingClientRect();
+        let setKnobPos: React.Dispatch<React.SetStateAction<number>> = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+        if ((movingKnob === 0 && x > otherKnobRect.left) || (movingKnob === 1 && x < otherKnobRect.left)) {
+            let otherKnobPos = (otherKnobRect.left - rect.left) / rect.width;
+            setKnobPos(float2Decimal(otherKnobPos, 4)); // set current knob position to exact same as other knob first
+            if (props.stopOnOverlap) return;
+            movingKnob = otherKnob; // change current knob to other knob
+            setActiveKnob(otherKnob);
+            setKnobPos = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
         }
-
+        setKnobPos(float2Decimal(newPos, 4));
     }
 
     let onDown = (pos: [number, number], changeKnobPos: Function) => {
         let rect = sliderRef.current!.getBoundingClientRect(); // get color picker global position
-        movingKnob = Math.abs((pos[0] - rect.left) / rect.width - minSliderPos) <= Math.abs((pos[0] - rect.left) / rect.width - maxSliderPos) ? 0 : 1;
+        let sliderPos = (pos[0] - rect.left) / rect.width;
+        movingKnob = sliderPos < minKnobPos || Math.abs(sliderPos - minKnobPos) < Math.abs(sliderPos - maxKnobPos) ? 0 : 1;
+        setActiveKnob(movingKnob);
         changeKnobPos(pos);
         let move = (e: PointerEvent) => changeKnobPos([e.clientX, e.clientY]);
         let up = () => {
             movingKnob = -1;
+            setActiveKnob(-1);
             document.body.removeEventListener("pointermove", move);
             document.body.removeEventListener("pointerup", up);
         }
@@ -47,15 +55,21 @@ export const RangeSlider = (props: { sliderBarClass: string, sliderFillClass: st
     return (
         <div ref={ sliderRef } className="range-slider no_highlight"
             onPointerDown={ (e: React.PointerEvent<HTMLDivElement>) => onDown([e.clientX, e.clientY], changeKnobPos) }>
-            <div className={ `range-slider-fill ${props.sliderBarClass}` }>
-                <div className={ `range-slider-bar ${props.sliderFillClass}` } style={ { width: `${minSliderPos * 100}%` } } />
-                <div className={ `range-slider-bar ${props.sliderFillClass}` } style={ { width: `${(1 - maxSliderPos) * 100}%` } } />
+            <div className={ `range-slider-bar ${props.barClass}` }
+                style={ {
+                    background: `linear-gradient(to right,
+                        ${props.barColor} ${minKnobPos * 100}%,
+                        ${props.fillColor} ${minKnobPos * 100}%,
+                        ${props.fillColor} ${maxKnobPos * 100}%,
+                        ${props.barColor} ${maxKnobPos * 100}%,
+                        ${props.barColor})`
+                } }
+            />
+            <div ref={ knobRef[0] } className="range-slider-position" style={ { left: `${minKnobPos * 100}%`, zIndex: activeKnob === 0 ? 1 : 0 } }>
+                <div className={ `range-silder-knob ${props.minKnobClass}` } />
             </div>
-            <div className="range-slider-position" style={ { left: `${minSliderPos * 100}%` } }>
-                <div className={ `range-silder-knob ${props.sliderKnobClass}` } />
-            </div>
-            <div className="range-slider-position" style={ { left: `${maxSliderPos * 100}%` } }>
-                <div className={ `range-silder-knob ${props.sliderKnobClass}` } />
+            <div ref={ knobRef[1] } className="range-slider-position" style={ { left: `${maxKnobPos * 100}%`, zIndex: activeKnob === 1 ? 1 : 0 } }>
+                <div className={ `range-silder-knob ${props.maxKnobClass}` } />
             </div>
         </div>
     )
