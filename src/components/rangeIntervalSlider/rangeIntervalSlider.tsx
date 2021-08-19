@@ -26,13 +26,16 @@ export const RangeIntervalSlider = (props: { intervals: number, barColor: string
         let otherKnobRect = knobRef[otherKnob].current!.getBoundingClientRect();
         let otherKnobPos = (otherKnobRect.left - rect.left) / rect.width;
         let setKnobPos: React.Dispatch<React.SetStateAction<number>> = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+        let changeKnob = (otherKnob: number) => {
+            movingKnob = otherKnob; // change current knob to other knob
+            setActiveKnob(otherKnob);
+            return movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+        };
         if (props.allowOverlap) {
             if ((movingKnob === 0 && x > otherKnobRect.left) || (movingKnob === 1 && x < otherKnobRect.left)) {
                 setKnobPos(float2Decimal(otherKnobPos, 4)); // set current knob position to exact same as other knob first
                 if (props.stopOnOverlap) return;
-                movingKnob = otherKnob; // change current knob to other knob
-                setActiveKnob(otherKnob);
-                setKnobPos = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+                setKnobPos = changeKnob(otherKnob);
             }
         }
         else {
@@ -40,9 +43,7 @@ export const RangeIntervalSlider = (props: { intervals: number, barColor: string
             let otherKnobValue = Math.round(otherKnobPos * props.intervals);
             if ((movingKnob === 0 && movingKnobValue >= otherKnobValue) || (movingKnob === 1 && movingKnobValue <= otherKnobValue)) {
                 if (props.stopOnOverlap) return;
-                movingKnob = otherKnob; // change current knob to other knob
-                setActiveKnob(otherKnob);
-                setKnobPos = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+                setKnobPos = changeKnob(otherKnob);
             }
         }
         setKnobPos(float2Decimal(closest, 4));
