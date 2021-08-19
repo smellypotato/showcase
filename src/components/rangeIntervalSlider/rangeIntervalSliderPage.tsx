@@ -23,11 +23,13 @@ export class RangeIntervalSliderPage extends React.Component<{}, { min: number, 
                 <div className="f_16">{ this.state.min } - { this.state.max }</div>
                 <div id="range-interval-slider-page-slider">
                     <RangeIntervalSlider
+                        intervals = { 17 }
                         barColor="#C1C9CD"
                         fillColor="#927DA4"
                         barClass="range-interval-slider-page-slider-bar"
                         minKnobClass="range-interval-slider-page-slider-knob bg_red"
                         maxKnobClass="range-interval-slider-page-slider-knob bg_blue"
+                        allowOverlap={ false }
                         stopOnOverlap={ true }
                         onChangeMin={ this.onChangeMin.bind(this) }
                         onChangeMax={ this.onChangeMax.bind(this) }

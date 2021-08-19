@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./rangeIntervalSlider.css";
 
-export const RangeIntervalSlider = (props: { barColor: string, fillColor: string, barClass: string, minKnobClass: string, maxKnobClass: string, stopOnOverlap: boolean, onChangeMin: Function, onChangeMax: Function }) => {
+export const RangeIntervalSlider = (props: { intervals: number, barColor: string, fillColor: string, barClass: string, minKnobClass: string, maxKnobClass: string, allowOverlap: boolean, stopOnOverlap: boolean, onChangeMin: Function, onChangeMax: Function }) => {
     let sliderRef = useRef<HTMLDivElement>(null);
     let knobRef: [React.RefObject<HTMLDivElement>, React.RefObject<HTMLDivElement>] = [useRef<HTMLDivElement>(null), useRef<HTMLDivElement>(null)];
     let [minKnobPos, setminKnobPos] = useState(0);
@@ -9,8 +9,8 @@ export const RangeIntervalSlider = (props: { barColor: string, fillColor: string
     let [activeKnob, setActiveKnob] = useState(-1); // for setting z-Index
     let movingKnob = -1; //no need state, will reset anyway
 
-    useEffect(() => props.onChangeMin(minKnobPos), [minKnobPos]);
-    useEffect(() => props.onChangeMax(maxKnobPos), [maxKnobPos]);
+    useEffect(() => props.onChangeMin(Math.round(minKnobPos * props.intervals)), [minKnobPos]);
+    useEffect(() => props.onChangeMax(Math.round(maxKnobPos * props.intervals)), [maxKnobPos]);
 
     let float2Decimal = (value: number, decimal: number) => parseFloat(value.toFixed(decimal));
 
@@ -21,18 +21,31 @@ export const RangeIntervalSlider = (props: { barColor: string, fillColor: string
         if (x < rect.left) x = rect.left;
         else if (x > rect.right) x = rect.right;
         let newPos = (x - rect.left) / rect.width;
+        let closest = Math.round(newPos * props.intervals) / props.intervals;
         let otherKnob = (movingKnob + 1) % 2;
         let otherKnobRect = knobRef[otherKnob].current!.getBoundingClientRect();
+        let otherKnobPos = (otherKnobRect.left - rect.left) / rect.width;
         let setKnobPos: React.Dispatch<React.SetStateAction<number>> = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
-        if ((movingKnob === 0 && x > otherKnobRect.left) || (movingKnob === 1 && x < otherKnobRect.left)) {
-            let otherKnobPos = (otherKnobRect.left - rect.left) / rect.width;
-            setKnobPos(float2Decimal(otherKnobPos, 4)); // set current knob position to exact same as other knob first
-            if (props.stopOnOverlap) return;
-            movingKnob = otherKnob; // change current knob to other knob
-            setActiveKnob(otherKnob);
-            setKnobPos = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+        if (props.allowOverlap) {
+            if ((movingKnob === 0 && x > otherKnobRect.left) || (movingKnob === 1 && x < otherKnobRect.left)) {
+                setKnobPos(float2Decimal(otherKnobPos, 4)); // set current knob position to exact same as other knob first
+                if (props.stopOnOverlap) return;
+                movingKnob = otherKnob; // change current knob to other knob
+                setActiveKnob(otherKnob);
+                setKnobPos = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+            }
         }
-        setKnobPos(float2Decimal(newPos, 4));
+        else {
+            let movingKnobValue = Math.round(newPos * props.intervals);
+            let otherKnobValue = Math.round(otherKnobPos * props.intervals);
+            if ((movingKnob === 0 && movingKnobValue >= otherKnobValue) || (movingKnob === 1 && movingKnobValue <= otherKnobValue)) {
+                if (props.stopOnOverlap) return;
+                movingKnob = otherKnob; // change current knob to other knob
+                setActiveKnob(otherKnob);
+                setKnobPos = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+            }
+        }
+        setKnobPos(float2Decimal(closest, 4));
     }
 
     let onDown = (pos: [number, number], changeKnobPos: Function) => {
