@@ -7,7 +7,7 @@ export const RangeIntervalSlider = (props: { intervals: number, barColor: string
     let [minKnobPos, setminKnobPos] = useState(0);
     let [maxKnobPos, setmaxKnobPos] = useState(1);
     let [activeKnob, setActiveKnob] = useState(-1); // for setting z-Index
-    let movingKnob = -1; //no need state, will reset anyway
+    let movingKnob = useRef(-1); //no need state, will reset anyway
 
     useEffect(() => props.onChangeMin(Math.round(minKnobPos * props.intervals)), [minKnobPos]);
     useEffect(() => props.onChangeMax(Math.round(maxKnobPos * props.intervals)), [maxKnobPos]);
@@ -22,17 +22,17 @@ export const RangeIntervalSlider = (props: { intervals: number, barColor: string
         else if (x > rect.right) x = rect.right;
         let newPos = (x - rect.left) / rect.width;
         let closest = Math.round(newPos * props.intervals) / props.intervals;
-        let otherKnob = (movingKnob + 1) % 2;
+        let otherKnob = (movingKnob.current + 1) % 2;
         let otherKnobRect = knobRef[otherKnob].current!.getBoundingClientRect();
         let otherKnobPos = (otherKnobRect.left - rect.left) / rect.width;
-        let setKnobPos: React.Dispatch<React.SetStateAction<number>> = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+        let setKnobPos: React.Dispatch<React.SetStateAction<number>> = movingKnob.current === 0 ? setminKnobPos : setmaxKnobPos;
         let changeKnob = (otherKnob: number) => {
-            movingKnob = otherKnob; // change current knob to other knob
+            movingKnob.current = otherKnob; // change current knob to other knob
             setActiveKnob(otherKnob);
-            return movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+            return movingKnob.current === 0 ? setminKnobPos : setmaxKnobPos;
         };
         if (props.allowOverlap) {
-            if ((movingKnob === 0 && x > otherKnobRect.left) || (movingKnob === 1 && x < otherKnobRect.left)) {
+            if ((movingKnob.current === 0 && x > otherKnobRect.left) || (movingKnob.current === 1 && x < otherKnobRect.left)) {
                 setKnobPos(float2Decimal(otherKnobPos, 4)); // set current knob position to exact same as other knob first
                 if (props.stopOnOverlap) return;
                 setKnobPos = changeKnob(otherKnob);
@@ -41,7 +41,7 @@ export const RangeIntervalSlider = (props: { intervals: number, barColor: string
         else {
             let movingKnobValue = Math.round(newPos * props.intervals);
             let otherKnobValue = Math.round(otherKnobPos * props.intervals);
-            if ((movingKnob === 0 && movingKnobValue >= otherKnobValue) || (movingKnob === 1 && movingKnobValue <= otherKnobValue)) {
+            if ((movingKnob.current === 0 && movingKnobValue >= otherKnobValue) || (movingKnob.current === 1 && movingKnobValue <= otherKnobValue)) {
                 if (props.stopOnOverlap) return;
                 setKnobPos = changeKnob(otherKnob);
             }
@@ -52,12 +52,12 @@ export const RangeIntervalSlider = (props: { intervals: number, barColor: string
     let onDown = (pos: [number, number], changeKnobPos: Function) => {
         let rect = sliderRef.current!.getBoundingClientRect(); // get color picker global position
         let sliderPos = (pos[0] - rect.left) / rect.width;
-        movingKnob = sliderPos < minKnobPos || Math.abs(sliderPos - minKnobPos) < Math.abs(sliderPos - maxKnobPos) ? 0 : 1;
-        setActiveKnob(movingKnob);
+        movingKnob.current = sliderPos < minKnobPos || Math.abs(sliderPos - minKnobPos) < Math.abs(sliderPos - maxKnobPos) ? 0 : 1;
+        setActiveKnob(movingKnob.current);
         changeKnobPos(pos);
         let move = (e: PointerEvent) => changeKnobPos([e.clientX, e.clientY]);
         let up = () => {
-            movingKnob = -1;
+            movingKnob.current = -1;
             setActiveKnob(-1);
             document.body.removeEventListener("pointermove", move);
             document.body.removeEventListener("pointerup", up);

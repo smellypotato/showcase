@@ -7,7 +7,7 @@ export const RangeSlider = (props: { barColor: string, fillColor: string, barCla
     let [minKnobPos, setminKnobPos] = useState(0);
     let [maxKnobPos, setmaxKnobPos] = useState(1);
     let [activeKnob, setActiveKnob] = useState(-1); // for setting z-Index
-    let movingKnob = -1; //no need state, will reset anyway
+    let movingKnob = useRef(-1); //no need state, will reset anyway
 
     useEffect(() => props.onChangeMinPercentage(minKnobPos), [minKnobPos]);
     useEffect(() => props.onChangeMaxPercentage(maxKnobPos), [maxKnobPos]);
@@ -21,16 +21,16 @@ export const RangeSlider = (props: { barColor: string, fillColor: string, barCla
         if (x < rect.left) x = rect.left;
         else if (x > rect.right) x = rect.right;
         let newPos = (x - rect.left) / rect.width;
-        let otherKnob = (movingKnob + 1) % 2;
+        let otherKnob = (movingKnob.current + 1) % 2;
         let otherKnobRect = knobRef[otherKnob].current!.getBoundingClientRect();
-        let setKnobPos: React.Dispatch<React.SetStateAction<number>> = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
-        if ((movingKnob === 0 && x > otherKnobRect.left) || (movingKnob === 1 && x < otherKnobRect.left)) {
+        let setKnobPos: React.Dispatch<React.SetStateAction<number>> = movingKnob.current === 0 ? setminKnobPos : setmaxKnobPos;
+        if ((movingKnob.current === 0 && x > otherKnobRect.left) || (movingKnob.current === 1 && x < otherKnobRect.left)) {
             let otherKnobPos = (otherKnobRect.left - rect.left) / rect.width;
             setKnobPos(float2Decimal(otherKnobPos, 4)); // set current knob position to exact same as other knob first
             if (props.stopOnOverlap) return;
-            movingKnob = otherKnob; // change current knob to other knob
+            movingKnob.current = otherKnob; // change current knob to other knob
             setActiveKnob(otherKnob);
-            setKnobPos = movingKnob === 0 ? setminKnobPos : setmaxKnobPos;
+            setKnobPos = movingKnob.current === 0 ? setminKnobPos : setmaxKnobPos;
         }
         setKnobPos(float2Decimal(newPos, 4));
     }
@@ -38,12 +38,12 @@ export const RangeSlider = (props: { barColor: string, fillColor: string, barCla
     let onDown = (pos: [number, number], changeKnobPos: Function) => {
         let rect = sliderRef.current!.getBoundingClientRect(); // get color picker global position
         let sliderPos = (pos[0] - rect.left) / rect.width;
-        movingKnob = sliderPos < minKnobPos || Math.abs(sliderPos - minKnobPos) < Math.abs(sliderPos - maxKnobPos) ? 0 : 1;
-        setActiveKnob(movingKnob);
+        movingKnob.current = sliderPos < minKnobPos || Math.abs(sliderPos - minKnobPos) < Math.abs(sliderPos - maxKnobPos) ? 0 : 1;
+        setActiveKnob(movingKnob.current);
         changeKnobPos(pos);
         let move = (e: PointerEvent) => changeKnobPos([e.clientX, e.clientY]);
         let up = () => {
-            movingKnob = -1;
+            movingKnob.current = -1;
             setActiveKnob(-1);
             document.body.removeEventListener("pointermove", move);
             document.body.removeEventListener("pointerup", up);
