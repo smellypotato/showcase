@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { CalendarPage } from './components/calendar/calendarPage';
 import { ColorPickerPage } from './components/colorPicker/colorPickerPage';
 import { Home } from './components/home/home';
 import { IntervalSliderPage } from './components/intervalSlider/intervalSliderPage';
@@ -18,6 +19,7 @@ export default class App extends React.Component<{}, {}> {
                         <Route exact path="/interval-slider"><IntervalSliderPage /></Route>
                         <Route exact path="/range-slider"><RangeSliderPage /></Route>
                         <Route exact path="/range-interval-slider"><RangeIntervalSliderPage /></Route>
+                        <Route exact path="/calendar"><CalendarPage /></Route>
                         <Route path="/"><Home /></Route>
                     </Switch>
                 </BrowserRouter>
