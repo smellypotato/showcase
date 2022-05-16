@@ -28,7 +28,7 @@ export const YahtzeeTable = (props: { combinations: Map<YAHTZEE_TYPE, number>, o
         return props.combinations.get(type)!;
     }
     const getDisplay = (type: YAHTZEE_TYPE) => {
-        return ((props.onSelectRow || (!props.onSelectRow && getValue(type)! < 0)) && getCombinationValue(type));
+        return (props.onSelectRow || (!props.onSelectRow && getValue(type)! < 0)) && getCombinationValue(type) && Math.abs(getCombinationValue(type)!);
     }
     const onClick = (type: YAHTZEE_TYPE) => {
         return props.onSelectRow ? props.onSelectRow!(type) : undefined
@@ -45,11 +45,11 @@ export const YahtzeeTable = (props: { combinations: Map<YAHTZEE_TYPE, number>, o
                     ))}
                     <tr>
                         <th>Bonus (63+) 加分 (63+)</th>
-                        <td>{ getDisplay(YAHTZEE_TYPE.BONUS) }</td>
+                        <td>{ Math.abs(getDisplay(YAHTZEE_TYPE.YAHTZEE_BONUS) as number) || 0 }</td>
                     </tr>
                     <tr>
                         <th>Total of Upper Section (上區總分)</th>
-                        <td>{ Array.from(props.combinations).reduce((prev, currPair) => prev + (currPair[0] < 10 && currPair[1] < 0 ? (getDisplay(currPair[0]) || 0) : 0), 0) }</td>
+                        <td>{ Array.from(props.combinations).reduce((prev, currPair) => prev + (currPair[0] < 10 && currPair[1] < 0 ? Math.abs(getDisplay(currPair[0]) || 0) : 0), 0) }</td>
                     </tr>
 
                 </tbody>
@@ -64,7 +64,7 @@ export const YahtzeeTable = (props: { combinations: Map<YAHTZEE_TYPE, number>, o
                     ))}
                     <tr>
                         <th>Total of Lower Section (下區總分)</th>
-                        <td>{ Array.from(props.combinations).reduce((prev, currPair) => prev + (currPair[0] > 10 && currPair[1] < 0 ? (getDisplay(currPair[0]) || 0) : 0), 0) }</td>
+                        <td>{ Array.from(props.combinations).reduce((prev, currPair) => prev + (currPair[0] > 10 && currPair[1] < 0 ? Math.abs(getDisplay(currPair[0]) || 0) : 0), 0) }</td>
                     </tr>
                 </tbody>
             </table>
@@ -72,7 +72,7 @@ export const YahtzeeTable = (props: { combinations: Map<YAHTZEE_TYPE, number>, o
                 <tbody>
                     <tr>
                         <th>Total (總分)</th>
-                        <td>{ Array.from(props.combinations).reduce((prev, currPair) => prev + (currPair[1] < 0 ? (getDisplay(currPair[0]) || 0) : 0), 0) }</td>
+                        <td>{ Array.from(props.combinations).reduce((prev, currPair) => prev + (currPair[1] < 0 ? Math.abs(getDisplay(currPair[0]) || 0) : 0), 0) }</td>
                     </tr>
                 </tbody>
             </table>

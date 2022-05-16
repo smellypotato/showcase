@@ -42,6 +42,7 @@ export const YahtzeePage = () => {
     const [rolling, setRolling] = useState(false);
     const [rollCount, setRollCount] = useState(0);
     const [roundRunning, setRoundRunning] = useState(false);
+    const [gameEnd, setGameEnd] = useState(false);
     const rollingId = useRef(-1);
 
     useEffect(() => {
@@ -72,16 +73,22 @@ export const YahtzeePage = () => {
     }, [rolling]);
 
     useEffect(() => {
-        console.log(combinations.get(YAHTZEE_TYPE.BONUS));
         if (roundRunning || combinations.get(YAHTZEE_TYPE.BONUS) === -35) return;
         let upperSum = checkBonus(combinations);
-        console.log(upperSum);
         if (Math.abs(upperSum) >= 63) {
             let newCombination = new Map([...combinations]);
             newCombination.set(YAHTZEE_TYPE.BONUS, -35)
             setCombinations(newCombination);
         }
     }, [combinations, roundRunning]);
+
+    useEffect(() => {
+        if (!gameEnd) {
+            updateDices([randomDice(), randomDice(), randomDice(), randomDice(), randomDice()]);
+            setCombinations(combinationMap());
+            setRollCount(0);
+        }
+    }, [gameEnd]);
 
     const stopRoll = () => {
         clearInterval(rollingId.current);
@@ -124,7 +131,10 @@ export const YahtzeePage = () => {
         let dicesClone = [...dices];
         dicesClone.forEach(dice => dice.locked = false);
         setDices(dicesClone);
-        if (!Array.from(newCombination).find(pair => pair[1] >= 0)) alert("End game");
+        if (!Array.from(newCombination).find(pair => pair[1] >= 0)) {
+            alert("End game");
+            setGameEnd(true);
+        }
     }
 
     const checkBonus = (combination: Combinations) => {
@@ -138,7 +148,10 @@ export const YahtzeePage = () => {
             <div id="yahtzee-dice-roll">
                 { dices.map((dice, i) => <Dice key={ i } point={ dice.value } locked={ dice.locked } onClick={ !rolling && rollCount > 0 ? onLockDice.bind(Dice, i) : undefined }/>) }
             </div>
-            <div id="yahtzee-button" className="no_highlight cursor_button" onClick={ () => setRolling(rollCount < 3 && !rolling) }>Roll</div>
+            {   !gameEnd ?
+                <div id="yahtzee-button" className="no_highlight cursor_button" onClick={ () => setRolling(rollCount < 3 && !rolling) }>Roll</div> :
+                <div id="yahtzee-button" className="no_highlight cursor_button" onClick={ () => setGameEnd(false) }>Replay</div>
+            }
             <div id="yahtzee-rolls">
                 { Array(3).fill(undefined).map((_n, i) => <div key={ i } className="yahtzee-roll">{ rollCount > i && <div className="yahtzee-roll-count" /> }</div>)}
 
