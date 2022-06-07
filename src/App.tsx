@@ -8,6 +8,7 @@ import { RangeIntervalSliderPage } from './components/rangeIntervalSlider/rangeI
 import { RangeSliderPage } from './components/rangeSlider/rangeSliderPage';
 import { SliderPage } from './components/slider/sliderPage';
 import { SnakePage } from './components/snake/snakePage';
+import { TimerPage } from './components/timer/timerPage';
 import { YahtzeePage } from './components/yahtzee/yahtzeePage';
 
 export default class App extends React.Component<{}, {}> {
@@ -24,6 +25,7 @@ export default class App extends React.Component<{}, {}> {
                         <Route exact path="/calendar"><CalendarPage /></Route>
                         <Route exact path="/yahtzee"><YahtzeePage /></Route>
                         <Route exact path="/snake"><SnakePage /></Route>
+                        <Route exact path="/timer"><TimerPage /></Route>
                         <Route path="/"><Home /></Route>
                     </Switch>
                 </BrowserRouter>
