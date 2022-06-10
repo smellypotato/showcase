@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { AStarPage } from './components/aStar/aStarPage';
 import { CalendarPage } from './components/calendar/calendarPage';
 import { ColorPickerPage } from './components/colorPicker/colorPickerPage';
 import { Home } from './components/home/home';
@@ -26,6 +27,7 @@ export default class App extends React.Component<{}, {}> {
                         <Route exact path="/yahtzee"><YahtzeePage /></Route>
                         <Route exact path="/snake"><SnakePage /></Route>
                         <Route exact path="/timer"><TimerPage /></Route>
+                        <Route exact path="/a-star"><AStarPage /></Route>
                         <Route path="/"><Home /></Route>
                     </Switch>
                 </BrowserRouter>

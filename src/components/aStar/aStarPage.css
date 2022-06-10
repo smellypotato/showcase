@@ -1,0 +1,29 @@
+#a-star-page {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+#a-star-container {
+    height: 80%;
+    aspect-ratio: 1;
+    border: 1px solid #000;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+}
+#a-star-container > div {
+    outline: solid 1px #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.a-star-cell:hover {
+    background-color: #FF3A3A;
+}
+.a-star-cell-neighbour {
+    background-color: #FF9999
+}
