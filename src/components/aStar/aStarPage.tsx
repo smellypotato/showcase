@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./aStarPage.css";
 
-const size = 10;
+const size = 11;
 
 export const AStarPage = () => {
 
@@ -29,11 +29,43 @@ export const AStarPage = () => {
         setHovering(-1);
     }, []);
 
+    const checkClass = useCallback((grid: number) => {
+        let className = "a-star-cell";
+        if (hovering < 0) return className;
+        let firstLayer = gridsLink[hovering];
+        if (firstLayer.includes(grid)) className += "-neighbour";
+        let secondLayer = gridsLink[hovering].map(neighbour => gridsLink[neighbour]).flat();
+        if (secondLayer.includes(grid) && grid !== hovering) className += "-ring";
+        return className;
+    }, [hovering, gridsLink]);
+
+    const aStarAlgo = useMemo(() => {
+        let start = 12;
+        let goal = 108
+        let openSet = [start];
+        let path: Array<number> = []
+        let costTo: Array<number> = [];
+        costTo[start] = 0;
+        while (openSet.length > 0) {
+            let currentCell = openSet.pop() as number;
+            if (currentCell === goal) break;
+            gridsLink[currentCell].forEach(neighbour => {
+                let costToNeighbour = costTo[currentCell] + 1; // each path cost 1;
+                if (!costTo[neighbour] || costToNeighbour < costTo[neighbour]) {
+                    costTo[neighbour] = costToNeighbour;
+
+                    openSet.push(neighbour);
+                    costTo
+                }
+            })
+        }
+    }, []);
+
     return (
         <div id="a-star-page">
-            <div id="a-star-container">
+            <div id="a-star-container" style={ { gridTemplateColumns: `repeat(${size}, 1fr)`, gridTemplateRows: `repeat(${size}, 1fr)` } }>
                 {
-                    Array(100).fill("").map((_e, i) => <div className={ `a-star-cell${hovering >= 0 && gridsLink[hovering].includes(i) ? "-neighbour" : ""}` } key={ i } onMouseEnter={ hover.bind(AStarPage, i) } onMouseLeave={ unhover }>{ `${i}`.padStart(2, "0") }</div>)
+                    Array(size * size).fill("").map((_e, i) => <div className={ checkClass(i) } key={ i } onMouseEnter={ hover.bind(AStarPage, i) } onMouseLeave={ unhover }>{ `${i}`.padStart((size * size - 1).toString().length, "0") }</div>)
                 }
             </div>
         </div>
