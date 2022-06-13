@@ -28,3 +28,12 @@
 .a-star-cell-ring {
     background-color: #FFCCCC;
 }
+.a-star-cell-processed {
+    background-color: #FFCCCC;
+}
+.a-star-cell-processed-path {
+    background-color: #FF0000;
+}
+.a-star-cell-block {
+    background-color: #474747;
+}
