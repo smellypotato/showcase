@@ -19,9 +19,9 @@
     justify-content: center;
     align-items: center;
 }
-.a-star-cell:hover {
+/* .a-star-cell:hover {
     background-color: #FF0000;
-}
+} */
 .a-star-cell-neighbour {
     background-color: #FF6666;
 }

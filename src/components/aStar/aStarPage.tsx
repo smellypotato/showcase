@@ -5,11 +5,14 @@ const size = 11;
 
 export const AStarPage = () => {
 
+    const [start] = useState(12);
+    const [goal] = useState(108);
     const [gridsLink, setGridsLink] = useState<Array<Array<number>>>([]);
-    const [hovering, setHovering] = useState(-1);
-    const [blocks] = useState([13, 14, 15, 16, 17, 18, 19,23, 33, 46, 47, 48, 49, 50, 51, 52, 53, 54])
+    // const [hovering, setHovering] = useState(-1);
+    const [blocks, setBlocks] = useState<Array<number>>([]);
     const [aStarPath, setAStarPath] = useState<Array<number>>([]);
     useEffect(() => {
+        console.log(blocks);
         let links: Array<Array<number>> = [];
         for (let i = 0; i < size * size; i++) {
             let connection = [];
@@ -23,15 +26,25 @@ export const AStarPage = () => {
             links.push(connection);
         }
         setGridsLink(links);
-    }, []);
+    }, [blocks]);
 
-    const hover = useCallback((grid: number) => {
+    // const hover = useCallback((grid: number) => {
         // setHovering(grid);
-    }, []);
+    // }, []);
 
-    const unhover = useCallback(() => {
+    // const unhover = useCallback(() => {
         // setHovering(-1);
-    }, []);
+    // }, []);
+
+    const addBlock = useCallback((i: number) => {
+        if (i !== start && i !== goal) {
+            let newBlocks = blocks.slice();
+            newBlocks.find(block => block === i) ?
+                newBlocks.splice(newBlocks.findIndex(block => block === i), 1) :
+                newBlocks.push(i);
+            setBlocks(newBlocks);
+        }
+    }, [start, goal, blocks])
 
     const aStarProcessedPath = useMemo(() => {
 
@@ -59,7 +72,6 @@ export const AStarPage = () => {
         let closedSet: Array<ClosedCellInfo> = [];
         while (openSet.length > 0) {
             let currentCell = openSet.shift() as OpenCellInfo; // shift the element sorted with smallest total cost
-
             closedSet.unshift({ cell: currentCell.cell, prevCell: currentCell.prevCell })
             if (currentCell.cell === goal) return closedSet;
             gridsLink[currentCell.cell].filter(neighbour => !closedSet.find(cellInfo => cellInfo.cell === neighbour)).forEach(neighbour => {
@@ -67,7 +79,7 @@ export const AStarPage = () => {
                 let neighbourCellInfo = openSet.find(cellInfo => cellInfo.cell === neighbour);
                 if (!neighbourCellInfo || costToNeighbour < neighbourCellInfo.costTo) {
                     neighbourCellInfo ?
-                        Object.assign(neighbourCellInfo, { costTo: costToNeighbour, prevCell: currentCell }) :
+                        Object.assign(neighbourCellInfo, { costTo: costToNeighbour, prevCell: currentCell.cell }) :
                         openSet.unshift({ cell: neighbour, costTo: costToNeighbour, costFrom: calculateCostFrom(goal, neighbour), prevCell: currentCell.cell})
                 }
             })
@@ -77,36 +89,36 @@ export const AStarPage = () => {
     }, [gridsLink]);
 
     useEffect(() => {
-        if (aStarProcessedPath.length === 0) return;
-        let path = [];
-        path.push(aStarProcessedPath[0].cell);
-        let prevCell = aStarProcessedPath[0].prevCell;
-        while (prevCell !== -1) {
-            let prevCellInfo = aStarProcessedPath.find(cell => cell.cell === prevCell);
-            path.push(prevCellInfo!.cell);
-            prevCell = prevCellInfo!.prevCell;
+        try {
+            if (aStarProcessedPath.length === 0) return;
+            let path = [];
+            path.push(aStarProcessedPath[0].cell);
+            let prevCell = aStarProcessedPath[0].prevCell;
+            while (prevCell !== -1) {
+                let prevCellInfo = aStarProcessedPath.find(cell => cell.cell === prevCell);
+                path.push(prevCellInfo!.cell);
+                prevCell = prevCellInfo!.prevCell;
+            }
+            setAStarPath(path)
         }
-        setAStarPath(path)
+        catch (e) {
+            console.error(e);
+        }
     }, [aStarProcessedPath])
 
     const checkClass = useCallback((grid: number) => {
         let className = "a-star-cell";
         if (blocks.includes(grid)) className += "-block"
-        // if (hovering < 0) return className;
-        // let firstLayer = gridsLink[hovering];
-        // if (firstLayer.includes(grid)) className += "-neighbour";
-        // let secondLayer = gridsLink[hovering].map(neighbour => gridsLink[neighbour]).flat();
-        // if (secondLayer.includes(grid) && grid !== hovering) className += "-ring";
         if (aStarProcessedPath.find(cell => cell.cell === grid)) className += "-processed";
         if (aStarPath.find(cell => cell === grid)) className += "-path";
         return className;
-    }, [hovering, gridsLink, aStarProcessedPath, aStarPath]);
+    }, [gridsLink, aStarProcessedPath, aStarPath]);
 
     return (
         <div id="a-star-page">
             <div id="a-star-container" style={ { gridTemplateColumns: `repeat(${size}, 1fr)`, gridTemplateRows: `repeat(${size}, 1fr)` } }>
                 {
-                    Array(size * size).fill("").map((_e, i) => <div className={ checkClass(i) } key={ i } onMouseEnter={ hover.bind(AStarPage, i) } onMouseLeave={ unhover }>{ `${i}`.padStart((size * size - 1).toString().length, "0") }</div>)
+                    Array(size * size).fill("").map((_e, i) => <div className={ checkClass(i) } key={ i } onClick={ addBlock.bind(AStarPage, i) } >{ `${i}`.padStart((size * size - 1).toString().length, "0") }</div>)
                 }
             </div>
         </div>
