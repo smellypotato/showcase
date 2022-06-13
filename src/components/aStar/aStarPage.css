@@ -22,6 +22,9 @@
 /* .a-star-cell:hover {
     background-color: #FF0000;
 } */
+.a-star-cell-end {
+    background-color: #F69522;
+}
 .a-star-cell-neighbour {
     background-color: #FF6666;
 }

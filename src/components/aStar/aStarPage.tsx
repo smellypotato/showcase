@@ -108,7 +108,14 @@ export const AStarPage = () => {
 
     const checkClass = useCallback((grid: number) => {
         let className = "a-star-cell";
-        if (blocks.includes(grid)) className += "-block"
+        if (start === grid || goal === grid) {
+            className += "-end";
+            return className;
+        }
+        if (blocks.includes(grid)) {
+            className += "-block";
+            return className;
+        }
         if (aStarProcessedPath.find(cell => cell.cell === grid)) className += "-processed";
         if (aStarPath.find(cell => cell === grid)) className += "-path";
         return className;
