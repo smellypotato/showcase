@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import "./aStarPage.css";
 
-const size = 11;
+const size = 25;
 
 export const AStarPage = () => {
 
-    const [start] = useState(12);
-    const [goal] = useState(108);
+    const [start] = useState(47);
+    const [goal] = useState(551);
     const [gridsLink, setGridsLink] = useState<Array<Array<number>>>([]);
     // const [hovering, setHovering] = useState(-1);
     const [blocks, setBlocks] = useState<Array<number>>([]);
@@ -66,12 +66,13 @@ export const AStarPage = () => {
             cell: number,
             prevCell: number
         }
-        let start = 12;
-        let goal = 108
         let openSet: Array<OpenCellInfo> = [{ cell: start, costTo: 0, costFrom: calculateCostFrom(goal, start), prevCell: -1}];
         let closedSet: Array<ClosedCellInfo> = [];
         while (openSet.length > 0) {
-            let currentCell = openSet.shift() as OpenCellInfo; // shift the element sorted with smallest total cost
+            let smallestCost = openSet[0].costFrom + openSet[0].costTo;
+            let smallestCostSet = openSet.filter(cellInfo => cellInfo.costFrom + cellInfo.costTo === smallestCost);
+            let randomIndex = Math.floor(Math.random() * smallestCostSet.length);
+            let currentCell = openSet.splice(randomIndex, 1)[0] as OpenCellInfo; // shift random element sorted with smallest total cost
             closedSet.unshift({ cell: currentCell.cell, prevCell: currentCell.prevCell })
             if (currentCell.cell === goal) return closedSet;
             gridsLink[currentCell.cell].filter(neighbour => !closedSet.find(cellInfo => cellInfo.cell === neighbour)).forEach(neighbour => {
@@ -86,7 +87,7 @@ export const AStarPage = () => {
             openSet.sort((cellInfoA, cellInfoB) => (cellInfoA.costTo + cellInfoA.costFrom) - (cellInfoB.costTo + cellInfoB.costFrom))
         }
         return [];
-    }, [gridsLink]);
+    }, [gridsLink, start, goal]);
 
     useEffect(() => {
         try {
@@ -125,7 +126,7 @@ export const AStarPage = () => {
         <div id="a-star-page">
             <div id="a-star-container" style={ { gridTemplateColumns: `repeat(${size}, 1fr)`, gridTemplateRows: `repeat(${size}, 1fr)` } }>
                 {
-                    Array(size * size).fill("").map((_e, i) => <div className={ checkClass(i) } key={ i } onClick={ addBlock.bind(AStarPage, i) } >{ `${i}`.padStart((size * size - 1).toString().length, "0") }</div>)
+                    Array(size * size).fill("").map((_e, i) => <div className={ checkClass(i) } key={ i } onClick={ addBlock.bind(AStarPage, i) } >{ /*`${i}`.padStart((size * size - 1).toString().length, "0")*/ }</div>)
                 }
             </div>
         </div>
