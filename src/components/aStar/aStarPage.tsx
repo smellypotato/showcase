@@ -39,7 +39,7 @@ export const AStarPage = () => {
     const addBlock = useCallback((i: number) => {
         if (i !== start && i !== goal) {
             let newBlocks = blocks.slice();
-            newBlocks.find(block => block === i) ?
+            newBlocks.find(block => block === i) !== undefined ?
                 newBlocks.splice(newBlocks.findIndex(block => block === i), 1) :
                 newBlocks.push(i);
             setBlocks(newBlocks);
