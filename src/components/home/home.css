@@ -3,4 +3,30 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    row-gap: 40px;
+}
+#home-choice {
+    width: 40vw;
+}
+#home-choice > * {
+    width: 100%;
+}
+[id^="home-choice-selected"] {
+    padding: 10px 5%;
+    border-radius: 20px;
+    border: 1px #000 solid;
+}
+#home-choice-selected-opened {
+    border-radius: 20px 20px 0px 0px
+}
+#home-choice li {
+    display: block;
+    border-width: 0 1px 1px;
+    border-style: solid;
+    border-color: #000;
+    padding: 10px 5%;
+}
+#home-choice li:hover {
+    background-color: #0EF;
 }
