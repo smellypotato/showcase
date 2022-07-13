@@ -14,21 +14,23 @@ export const TimerPage = () => {
     useEffect(() => {
         // common method, use setInterva to increase timer by 1
         // will delay when long time
-        setInterval(() => {
+        const timer = setInterval(() => {
             timer1Ref.current += 1;
             setTimer1(timer1Ref.current);
         }, 1000);
+        return () => clearInterval(timer);
     }, []);
 
     useEffect(() => {
         // use time difference to calculated timer
         // will not delay, will be affected if user change time
         const startTime = new Date();
-        setInterval(() => {
+        const timer = setInterval(() => {
             const currentTime = new Date();
             timer2Ref.current = currentTime.valueOf() - startTime.valueOf();
             setTimer2(Math.floor(timer2Ref.current / 1000));
-        }, 100)
+        }, 100);
+        return () => clearInterval(timer);
     }, [])
 
     return (

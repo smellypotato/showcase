@@ -27,3 +27,10 @@
 }
 .cursor_button { cursor: pointer }
 .text_center { text-align: center }
+
+#back {
+    padding: 10px 20px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    display: inline-block;
+}

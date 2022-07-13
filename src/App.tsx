@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AStarPage } from './components/aStar/aStarPage';
 import { CalendarPage } from './components/calendar/calendarPage';
 import { ColorPickerPage } from './components/colorPicker/colorPickerPage';
@@ -12,26 +12,26 @@ import { SnakePage } from './components/snake/snakePage';
 import { TimerPage } from './components/timer/timerPage';
 import { YahtzeePage } from './components/yahtzee/yahtzeePage';
 
-export default class App extends React.Component<{}, {}> {
-    render() {
-        return (
-            <div className="App">
-                <BrowserRouter>
-                    <Switch>
-                        <Route exact path="/color-picker"><ColorPickerPage /></Route>
-                        <Route exact path="/slider"><SliderPage /></Route>
-                        <Route exact path="/interval-slider"><IntervalSliderPage /></Route>
-                        <Route exact path="/range-slider"><RangeSliderPage /></Route>
-                        <Route exact path="/range-interval-slider"><RangeIntervalSliderPage /></Route>
-                        <Route exact path="/calendar"><CalendarPage /></Route>
-                        <Route exact path="/yahtzee"><YahtzeePage /></Route>
-                        <Route exact path="/snake"><SnakePage /></Route>
-                        <Route exact path="/timer"><TimerPage /></Route>
-                        <Route exact path="/a-star"><AStarPage /></Route>
-                        <Route path="/"><Home /></Route>
-                    </Switch>
-                </BrowserRouter>
-            </div>
-        )
-    }
+export const App = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    return (
+        <div className="App">
+            { location.key !== "default" && <div id="back" className="cursor_button" onClick={ () => navigate(-1) }>Back</div> }
+            <Routes>
+                <Route path="/color-picker" element={ <ColorPickerPage /> } />
+                <Route path="/slider" element={ <SliderPage /> } />
+                <Route path="/interval-slider" element={ <IntervalSliderPage /> } />
+                <Route path="/range-slider" element={ <RangeSliderPage /> } />
+                <Route path="/range-interval-slider" element={ <RangeIntervalSliderPage /> } />
+                <Route path="/calendar" element={ <CalendarPage /> } />
+                <Route path="/yahtzee" element={ <YahtzeePage /> } />
+                <Route path="/snake" element={ <SnakePage /> } />
+                <Route path="/timer" element={ <TimerPage /> } />
+                <Route path="/a-star" element={ <AStarPage /> } />
+                <Route path="/" element={ <Home /> } />
+            </Routes>
+        </div>
+    )
 }
