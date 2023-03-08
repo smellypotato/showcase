@@ -1,0 +1,22 @@
+#css-3d-page {
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.css-3d-page-slider {
+    height: 20px;
+    width: 500px;
+    display: flex;
+    column-gap: 8px;
+}
+.css-3d-page-slider-bar {
+    height: 8px;
+    border-radius: 4px;
+}
+.css-3d-page-slider-knob {
+    /* height: 7px; */
+    background-color: #F00;
+    width: 8px;
+    border-radius: 4px;
+}

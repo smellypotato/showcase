@@ -1,0 +1,40 @@
+#css-3d-visualize {
+    border: 1px solid #000;
+    margin: 16px 0;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+}
+#css-3d-visualize-screen {
+    width: 2px;
+    border-radius: 50%;
+    background-color: #00F;
+    height: 2px;
+    align-self: center;
+}
+#css-3d-visualize-space {
+    width: 4px;
+    border: 1px dashed #666;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+#css-3d-visualize-table {
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background-color: rgb(21, 133, 25);
+}
+#css-3d-visualize-viewcone {
+    width: 0;
+    height: 0;
+    border-top-style: solid;
+    border-top-color: transparent;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    border-left-style: solid;
+    border-left-color: rgba(50 50 255 / 0.5);
+}

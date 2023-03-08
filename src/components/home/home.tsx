@@ -10,17 +10,17 @@ export const Home = (props: {  }) => {
             <div id="home-choice">
                 <div id={ `home-choice-selected${showList ? "-opened" : ""}` } className="text_center cursor_button" onClick={ () => setShowList(!showList) }>Select demo</div>
                 <ul style={ { visibility: !showList ? "hidden" : "visible" } }>
-                    <Link to="/color-picker"><li className="cursor_button">Color Picker</li></Link>
-                    <Link to="/slider"><li className="cursor_button">Slider</li></Link>
-                    <Link to="/interval-slider"><li className="cursor_button">Interval Slider</li></Link>
-                    <Link to="/range-slider"><li className="cursor_button">Range Slider</li></Link>
-                    <Link to="/range-interval-slider"><li className="cursor_button">Range Interval Slider</li></Link>
-                    <Link to="/calendar"><li className="cursor_button">Calendar</li></Link>
-                    <Link to="/yahtzee"><li className="cursor_button">Yahtzee</li></Link>
-                    <Link to="/snake"><li className="cursor_button">Snake</li></Link>
-                    <Link to="/timer"><li className="cursor_button">Accurate Timer</li></Link>
-                    <Link to="/a-star"><li className="cursor_button">A* Algorithm</li></Link>
-
+                    <Link to="/showcase/color-picker"><li className="cursor_button">Color Picker</li></Link>
+                    <Link to="/showcase/slider"><li className="cursor_button">Slider</li></Link>
+                    <Link to="/showcase/interval-slider"><li className="cursor_button">Interval Slider</li></Link>
+                    <Link to="/showcase/range-slider"><li className="cursor_button">Range Slider</li></Link>
+                    <Link to="/showcase/range-interval-slider"><li className="cursor_button">Range Interval Slider</li></Link>
+                    <Link to="/showcase/calendar"><li className="cursor_button">Calendar</li></Link>
+                    <Link to="/showcase/yahtzee"><li className="cursor_button">Yahtzee</li></Link>
+                    <Link to="/showcase/snake"><li className="cursor_button">Snake</li></Link>
+                    <Link to="/showcase/timer"><li className="cursor_button">Accurate Timer</li></Link>
+                    <Link to="/showcase/a-star"><li className="cursor_button">A* Algorithm</li></Link>
+                    <Link to="/showcase/3d-css"><li className="cursor_button">3D CSS</li></Link>
                 </ul>
             </div>
         </div>

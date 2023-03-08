@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import "./slider.css";
 
-export const Slider = (props: { sliderBarClass: string, sliderFillClass: string, sliderKnobClass: string, onChangePercentage: Function }) => {
+export const Slider = (props: { sliderBarClass: string, sliderFillClass: string, sliderKnobClass: string, onChangePercentage: Function, default?: number }) => {
     let sliderRef = useRef<HTMLDivElement>(null);
-    let [sliderPos, setSliderPos] = useState(0);
+    let [sliderPos, setSliderPos] = useState(props.default || 0);
 
     useEffect(() => props.onChangePercentage(sliderPos), [sliderPos]);
 
@@ -20,11 +20,11 @@ export const Slider = (props: { sliderBarClass: string, sliderFillClass: string,
         changeKnobPos(pos);
         let move = (e: PointerEvent) => changeKnobPos([e.clientX, e.clientY]);
         let up = () => {
-            document.body.removeEventListener("pointermove", move);
-            document.body.removeEventListener("pointerup", up);
+            window.removeEventListener("pointermove", move);
+            window.removeEventListener("pointerup", up);
         }
-        document.body.addEventListener("pointermove", move);
-        document.body.addEventListener("pointerup", up);
+        window.addEventListener("pointermove", move);
+        window.addEventListener("pointerup", up);
     }
 
     return (

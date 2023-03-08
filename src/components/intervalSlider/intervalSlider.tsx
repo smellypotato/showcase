@@ -24,11 +24,11 @@ export const IntervalSlider = (props: { intervals: number , sliderBarClass: stri
         changeKnobPos(pos);
         let move = (e: PointerEvent) => changeKnobPos([e.clientX, e.clientY]);
         let up = () => {
-            document.body.removeEventListener("pointermove", move);
-            document.body.removeEventListener("pointerup", up);
+            window.removeEventListener("pointermove", move);
+            window.removeEventListener("pointerup", up);
         }
-        document.body.addEventListener("pointermove", move);
-        document.body.addEventListener("pointerup", up);
+        window.addEventListener("pointermove", move);
+        window.addEventListener("pointerup", up);
     }
 
     return (

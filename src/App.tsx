@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Css3DPage } from './components/Css3D/Css3DPage';
 import { AStarPage } from './components/aStar/aStarPage';
 import { CalendarPage } from './components/calendar/calendarPage';
 import { ColorPickerPage } from './components/colorPicker/colorPickerPage';
@@ -18,19 +19,20 @@ export const App = () => {
 
     return (
         <div className="App">
-            { location.key !== "default" && <div id="back" className="cursor_button" onClick={ () => navigate(-1) }>Back</div> }
+            { location.pathname !== "/showcase" && <div id="back" className="cursor_button" onClick={ () => location.key !== "default" ? navigate(-1) : navigate( "/showcase", { replace: true }) }>Back</div> }
             <Routes>
-                <Route path="/color-picker" element={ <ColorPickerPage /> } />
-                <Route path="/slider" element={ <SliderPage /> } />
-                <Route path="/interval-slider" element={ <IntervalSliderPage /> } />
-                <Route path="/range-slider" element={ <RangeSliderPage /> } />
-                <Route path="/range-interval-slider" element={ <RangeIntervalSliderPage /> } />
-                <Route path="/calendar" element={ <CalendarPage /> } />
-                <Route path="/yahtzee" element={ <YahtzeePage /> } />
-                <Route path="/snake" element={ <SnakePage /> } />
-                <Route path="/timer" element={ <TimerPage /> } />
-                <Route path="/a-star" element={ <AStarPage /> } />
-                <Route path="/" element={ <Home /> } />
+                <Route path="/showcase/color-picker" element={ <ColorPickerPage /> } />
+                <Route path="/showcase/slider" element={ <SliderPage /> } />
+                <Route path="/showcase/interval-slider" element={ <IntervalSliderPage /> } />
+                <Route path="/showcase/range-slider" element={ <RangeSliderPage /> } />
+                <Route path="/showcase/range-interval-slider" element={ <RangeIntervalSliderPage /> } />
+                <Route path="/showcase/calendar" element={ <CalendarPage /> } />
+                <Route path="/showcase/yahtzee" element={ <YahtzeePage /> } />
+                <Route path="/showcase/snake" element={ <SnakePage /> } />
+                <Route path="/showcase/timer" element={ <TimerPage /> } />
+                <Route path="/showcase/a-star" element={ <AStarPage /> } />
+                <Route path="/showcase/3d-css" element={ <Css3DPage /> } />
+                <Route path="/showcase/*" element={ <Home /> } />
             </Routes>
         </div>
     )
