@@ -8,6 +8,7 @@ export const Css3D = (props: { perspective: number, perspectiveOriginY: number, 
         <div id="css-3d-camera" style={ { perspective: `${props.perspective}px`, perspectiveOrigin: `center ${props.perspectiveOriginY}px` } }>
             <div id="css-3d-space">
                 <div id="css-3d-table" style={ { transform: `translateZ(${props.tableZ}px) rotateX(${props.tableRotateX}deg)` } }>
+                    <div id="css-3d-axis" />
                     { Array(8).fill(null).map((_, i) =>
                         <button onClick={ () => console.log(i + 1) }>{ i + 1 }</button>) }
                 </div>

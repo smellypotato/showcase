@@ -7,7 +7,7 @@ import { Css3DVisualize } from "./Css3DVisualize";
 export const Css3DPage = () => {
 
     const [perspectiveRange, setPerspectiveRange] = useState({ min: 1, max: 500 });
-    const [perspectiveOriginYRange, setPerspectiveOriginYRange] = useState({ min: -250, max: 250 });
+    const [perspectiveOriginYRange, setPerspectiveOriginYRange] = useState({ min: -100, max: 100 });
     const [tableRotateRange, setTableRotateRange] = useState({ min: 0, max: 90 });
     const [tableZRange, setTableZRange] = useState({ min: -100, max: 100 });
 

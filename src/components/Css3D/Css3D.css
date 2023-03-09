@@ -20,10 +20,19 @@
     grid-gap: 8px;
     padding: 8px;
     transform-origin: center center;
+    position: relative;
 }
 #css-3d-table > button {
     background-color: rgb(227, 179, 35);
     border-radius: 8px;
     font-size: 20px;
     cursor: pointer;
+}
+#css-3d-axis {
+    position: absolute;
+    width: 300px;
+    height: 0;
+    border: 1px dashed #000;
+    transform: translateX(-50px);
+    align-self: center;
 }
