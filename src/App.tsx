@@ -12,6 +12,7 @@ import { SliderPage } from './components/slider/sliderPage';
 import { SnakePage } from './components/snake/snakePage';
 import { TimerPage } from './components/timer/timerPage';
 import { YahtzeePage } from './components/yahtzee/yahtzeePage';
+import { UseColumnsPage } from './components/useColumns/useColumnsPage';
 
 export const App = () => {
     const navigate = useNavigate();
@@ -32,6 +33,7 @@ export const App = () => {
                 <Route path="/showcase/timer" element={ <TimerPage /> } />
                 <Route path="/showcase/a-star" element={ <AStarPage /> } />
                 <Route path="/showcase/3d-css" element={ <Css3DPage /> } />
+                <Route path="/showcase/use-columns" element={ <UseColumnsPage /> } />
                 <Route path="/showcase/*" element={ <Home /> } />
             </Routes>
         </div>

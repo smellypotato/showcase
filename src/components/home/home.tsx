@@ -21,6 +21,7 @@ export const Home = (props: {  }) => {
                     <Link to="/showcase/timer"><li className="cursor_button">Accurate Timer</li></Link>
                     <Link to="/showcase/a-star"><li className="cursor_button">A* Algorithm</li></Link>
                     <Link to="/showcase/3d-css"><li className="cursor_button">3D CSS</li></Link>
+                    <Link to="/showcase/use-columns"><li className="cursor_button">useColumns</li></Link>
                 </ul>
             </div>
         </div>
