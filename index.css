@@ -1,0 +1,36 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    outline: none;
+    line-height: 1em;
+}
+* a {
+    text-decoration: none;
+    color: inherit;
+    cursor: inherit;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+
+.background_image {
+    background: center no-repeat;
+    background-size: cover;
+}
+.no_highlight {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.cursor_button { cursor: pointer }
+.text_center { text-align: center }
+
+#back {
+    padding: 10px 20px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    display: inline-block;
+}

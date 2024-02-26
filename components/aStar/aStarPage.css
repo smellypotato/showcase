@@ -1,0 +1,42 @@
+#a-star-page {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+#a-star-container {
+    height: 80%;
+    aspect-ratio: 1;
+    border: 1px solid #000;
+    display: grid;
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+}
+#a-star-container > div {
+    outline: solid 1px #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* .a-star-cell:hover {
+    background-color: #FF0000;
+} */
+.a-star-cell-end {
+    background-color: #F69522;
+}
+.a-star-cell-neighbour {
+    background-color: #FF6666;
+}
+.a-star-cell-ring {
+    background-color: #FFCCCC;
+}
+.a-star-cell-processed {
+    background-color: #FFCCCC;
+}
+.a-star-cell-processed-path {
+    background-color: #FF0000;
+}
+.a-star-cell-block {
+    background-color: #474747;
+}

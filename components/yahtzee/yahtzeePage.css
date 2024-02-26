@@ -1,0 +1,43 @@
+#yahtzee-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#yahtzee-dice-roll {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    column-gap: 20px;
+}
+#yahtzee-button {
+    padding: 10px 40px;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: #000;
+    border-width: 1px;
+}
+#yahtzee-button:hover {
+    cursor: pointer;
+    background-color: #BEF6AD
+}
+#yahtzee-rolls {
+    display: grid;
+    grid-template-columns: repeat(3, 20px);
+    grid-column-gap: 10px
+}
+.yahtzee-roll {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1px solid #000;
+}
+.yahtzee-roll-count {
+    width: 60%;
+    height: 60%;
+    border-radius: 50%;
+    background-color: #F00;
+}

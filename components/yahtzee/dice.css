@@ -1,0 +1,23 @@
+.dice {
+    width: 75px;
+    height: 75px;
+    border-radius: 10%;
+    border-width: 2px;
+    border-color: #000;
+    border-style: solid;
+    padding: 5px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-row-gap: 5px;
+    grid-column-gap: 5px;
+}
+.dice-locked { background-color: #838383 }
+.dot {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #000;
+}
+.dot-red { background: #A00 }
+.dice[data-clickable="true"] { cursor: pointer }

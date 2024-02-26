@@ -1,0 +1,25 @@
+#useColumnsPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 20px;
+}
+#useColumnsPageInfo {
+    display: flex;
+    column-gap: 16px;
+}
+#useColumnsPageContainer {
+    width: 90vw;
+    height: 100px;
+    background-color: pink;
+    display: grid;
+    grid-template-columns: repeat(var(--columns), 1fr);
+    grid-column-gap: calc(var(--gap) * 1px);
+}
+#useColumnsPageContainer > div {
+    background: #65d47b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+}

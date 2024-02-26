@@ -1,0 +1,49 @@
+.color_prim_tint { color: var(--color_prim_tint) }
+.color_prim { color: var(--color_prim) }
+.color_prim_shade_1 { color: var(--color_prim_shade_1) }
+.color_prim_shade_2 { color: var(--color_prim_shade_2) }
+.color_prim_shade_3 { color: var(--color_prim_shade_3) }
+
+.color_sec_tint { color: var(--color_sec_tint) }
+.color_sec { color: var(--color_sec) }
+.color_sec_shade_1 { color: var(--color_sec_shade_1) }
+.color_sec_shade_2 { color: var(--color_sec_shade_2) }
+
+.color_grey_1 { color: var(--color_grey_1) }
+.color_grey_2 { color: var(--color_grey_2) }
+.color_grey_3 { color: var(--color_grey_3) }
+.color_grey_4 { color: var(--color_grey_4) }
+.color_grey_5 { color: var(--color_grey_5) }
+
+.color_red { color: var(--color_red) }
+.color_yellow { color: var(--color_yellow) }
+.color_green { color: var(--color_green) }
+.color_blue { color: var(--color_blue) }
+.color_white { color: var(--color_white) }
+
+/* background */
+.bg_prim_tint { background-color: var(--color_prim_tint) }
+.bg_prim { background-color: var(--color_prim) }
+.bg_prim_shade_1 { background-color: var(--color_prim_shade_1) }
+.bg_prim_shade_2 { background-color: var(--color_prim_shade_2) }
+.bg_prim_shade_3 { background-color: var(--color_prim_shade_3) }
+
+.bg_sec_tint { background-color: var(--color_sec_tint) }
+.bg_sec_tint_transparent { background-color: var(--color_sec_tint_transparent) }
+.bg_sec { background-color: var(--color_sec) }
+.bg_sec_shade_1 { background-color: var(--color_sec_shade_1) }
+.bg_sec_shade_2 { background-color: var(--color_sec_shade_2) }
+
+.bg_grey_1 { background-color: var(--color_grey_1) }
+.bg_grey_2 { background-color: var(--color_grey_2) }
+.bg_grey_3 { background-color: var(--color_grey_3) }
+.bg_grey_4 { background-color: var(--color_grey_4) }
+.bg_grey_5 { background-color: var(--color_grey_5) }
+.bg_grey_1_transparent { background-color: var(--color_grey_1_transparent) }
+.bg_transparent_black { background-color: var(--color_transparent_black) }
+
+.bg_red { background-color: var(--color_red) }
+.bg_yellow { background-color: var(--color_yellow) }
+.bg_green { background-color: var(--color_green) }
+.bg_blue { background-color: var(--color_blue) }
+.bg_white { background-color: var(--color_white) }

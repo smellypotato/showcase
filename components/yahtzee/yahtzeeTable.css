@@ -1,0 +1,27 @@
+.yahtzee-table {
+    width: 500px;
+    display: grid;
+    grid-row-gap: 20px;
+}
+
+.yahtzee-table > table,th,td {
+    border: solid 1px #000;
+}
+.yahtzee-table > table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.yahtzee-table > table > tbody > tr > th {
+    width: 75%;
+}
+.yahtzee-table th,td {
+    padding: 10px 10px;
+    text-align: center;
+}
+.yahtzee-table-highlight:hover {
+    cursor: pointer;
+    background-color: #0F05;
+}
+.yahtzee-table-fixed {
+    background-color: #E9E9E9;
+}

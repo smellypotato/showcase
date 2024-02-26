@@ -1,0 +1,53 @@
+.color-picker {
+    display: grid;
+    grid-row-gap: 40px;
+    margin-top: -40px;
+}
+.color-picker-panel {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1 / 1;
+    background-color: #FFF;
+    /* overflow: hidden; */
+    background-blend-mode: multiply;
+}
+.color-picker-indicator {
+    position: absolute;
+    width: 10px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    border-width: 1px;
+    border-style: solid;
+    transform: translate(-50%, -50%);
+}
+.color-picker-max-color-selector {
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to right, #FF0000, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF, #FF0000);
+    position: relative;
+}
+.color-picker-max-color-picker {
+    position: absolute;
+    width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.color-picker-max-color-picker > div {
+    width: 0;
+    height: 0;
+    border: 5px solid transparent;
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+}
+.color-picker-max-color-picker > div:first-child {
+    border-top: 7px solid #000000;
+    transform: translate(-50%, -50%);
+}
+.color-picker-max-color-picker > div:last-child {
+    border-bottom: 7px solid #000000;
+    transform: translate(-50%, 50%);
+}

@@ -1,0 +1,52 @@
+#snake {
+    display: grid;
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+    width: 500px;
+    aspect-ratio: 1;
+}
+#snake > div {
+    outline: solid 1px #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#snake-head-right {
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+#snake-head-left {
+    border-top-left-radius: 50%;
+    border-bottom-left-radius: 50%;
+}
+#snake-head-up {
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+}
+#snake-head-down {
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+[class^="snake-body"] {
+    background-color: #1AA413;
+    width: 100%;
+    height: 100%;
+}
+.snake-body-topleft {
+    border-top-left-radius: 50%;
+}
+.snake-body-bottomleft {
+    border-bottom-left-radius: 50%;
+}
+.snake-body-topright {
+    border-top-right-radius: 50%;
+}
+.snake-body-bottomright {
+    border-bottom-right-radius: 50%;
+}
+#snake-target {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
+}

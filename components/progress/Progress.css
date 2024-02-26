@@ -1,0 +1,82 @@
+.progress_container {
+  width: 100%;
+  height: 100%;
+}
+.progress_container .progress {
+  --duration: 250ms;
+  stroke-dasharray: 314;
+  stroke-dashoffset: calc(
+    (1 - var(--percentage)) * 314
+  ); /* 0 is full, 314 is empty */
+  transform-origin: 50%;
+  transform: rotate(-90deg);
+  transition: stroke-dashoffset var(--duration) linear,
+    stroke var(--duration) linear;
+}
+.progress_container text {
+  fill: #fff;
+  font-size: 40px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+@property --modern_percentage {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+.new_pie_display {
+  --thickness: 8px;
+  width: var(--size);
+  aspect-ratio: 1;
+  position: relative;
+  display: inline-grid;
+  place-content: center;
+  font-size: 40px;
+  background-color: #0008;
+  border-radius: 50%;
+  color: #FFF;
+}
+.new_pie_display:before {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+
+.new_pie_display:after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+}
+.new_pie_display:before {
+  inset: 0;
+  background: radial-gradient(farthest-side, var(--color) 98%, #0000) top /
+      var(--thickness) var(--thickness) no-repeat,
+    conic-gradient(var(--color) calc(var(--modern_percentage) * 1%), #0000 0);
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    #0000 calc(99% - var(--thickness)),
+    #000 calc(100% - var(--thickness))
+  );
+  mask: radial-gradient(
+    farthest-side,
+    #0000 calc(99% - var(--thickness)),
+    #000 calc(100% - var(--thickness))
+  );
+}
+.new_pie_display:after {
+  inset: calc(50% - var(--thickness) / 2);
+  background: linear-gradient(0.25turn, var(--color) 50%, #0000);
+  transform: rotate(calc(var(--modern_percentage) / 100 * 360deg))
+    translateY(calc(50% - var(--size) / 2));
+}
+.animate {
+  transition: --modern_percentage 250ms linear;
+}
+.no-round:before {
+  background-size: 0 0, auto;
+}
+.no-round:after {
+  content: none;
+}

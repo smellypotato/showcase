@@ -1,0 +1,24 @@
+.calendar {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: 35px;
+}
+
+.calendar-title {
+    display: grid;
+    grid-template-columns: 24px 1fr 24px;
+}
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 30px);
+    grid-template-rows: repeat(7, 30px);
+    grid-row-gap: 3px;
+}
+.calendar-node {   }
+.calendar-node-selected-0 { background: linear-gradient(to right, #FFFFFF 50%, #C2B6CC 50%) }
+.calendar-node-selected-1 { background: linear-gradient(to left, #FFFFFF 50%, #C2B6CC 50%) }
+
+.calendar-node-text { line-height: 30px }
+.calendar-node-text-selected { border-radius: 50% }
