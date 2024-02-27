@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./home.css";
 
-export const Home = (props: {  }) => {
+export const Home = () => {
     const [showList, setShowList] = useState(false);
     return (
         <div id="home">
@@ -23,6 +23,7 @@ export const Home = (props: {  }) => {
                     <Link to="/showcase/3d-css"><li className="cursor_button">3D CSS</li></Link>
                     <Link to="/showcase/use-columns"><li className="cursor_button">useColumns</li></Link>
                     <Link to="/showcase/progress"><li className="cursor_button">Progress</li></Link>
+                    <Link to="/showcase/poker"><li className="cursor_button">Poker</li></Link>
                 </ul>
             </div>
         </div>

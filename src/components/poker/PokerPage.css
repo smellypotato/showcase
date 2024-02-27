@@ -1,0 +1,12 @@
+#poker_page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 64px;
+}
+
+#poker_container {
+    height: 400px;
+    aspect-ratio: 5 / 7;
+    outline: 1px solid red;
+}

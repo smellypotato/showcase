@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { Css3DPage } from './components/Css3D/Css3DPage';
 import { AStarPage } from './components/aStar/aStarPage';
@@ -14,6 +13,7 @@ import { TimerPage } from './components/timer/timerPage';
 import { YahtzeePage } from './components/yahtzee/yahtzeePage';
 import { UseColumnsPage } from './components/useColumns/useColumnsPage';
 import { ProgressPage } from './components/progress/ProgressPage';
+import { PokerPage } from './components/poker/PokerPage';
 
 export const App = () => {
     const navigate = useNavigate();
@@ -36,6 +36,7 @@ export const App = () => {
                 <Route path="/showcase/3d-css" element={ <Css3DPage /> } />
                 <Route path="/showcase/use-columns" element={ <UseColumnsPage /> } />
                 <Route path="/showcase/progress" element={ <ProgressPage /> } />
+                <Route path="/showcase/poker" element={ <PokerPage /> } />
                 <Route path="/showcase/*" element={ <Home /> } />
             </Routes>
         </div>
