@@ -15,13 +15,16 @@
     position: absolute;
     width: 100%;
     height: 100%;
+    border-radius: 16px;
+    transform: rotate(calc(var(--angle) * 2deg - 180deg));
+}
+.poker_frontface > div {
+    width: 100%;
+    height: 100%;
     background: url(./card.png) no-repeat center;
     background-size: cover;
-    border-radius: 16px;
 }
-.poker_frontface.flipX { transform: scaleX(-1) }
-.poker_frontface.flipY { transform: scaleY(-1) }
-.poker_frontface.flipX.flipY { transform: scale(-1) }
+.poker_frontface.flip > div { transform: scale(-1) }
 .test_point {
     position: absolute;
     outline: 8px solid blue;

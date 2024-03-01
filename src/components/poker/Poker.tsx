@@ -6,6 +6,8 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
     const [cursorPosition, setCursorPosition] = useState({x: 0, y: 0});
     const [startingSides, setStartingSides] = useState({...defaultStartingSides});
     const [offset, setOffset] = useState<{top?: string, bottom?: string, left?: string, right?: string}>({});
+    const [anchor, setAnchor] = useState("");
+    const [angle, setAngle] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const centerSize = {horizontal: props.horizontalCenterSize || 40, vertical: props.verticalCenterSize || 60}
@@ -75,17 +77,30 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
         setOffset({...newOffset});
     };
 
-    useEffect(() => updateOffset(), [cursorPosition, startingSides]);
-
-    const getFlip = () => {
-        const flip = new Set();
-        (startingSides.top || startingSides.bottom) && flip.add("flipY") && flip.add('flipX');
-        return Array.from(flip).join(" ");
+    const updateAnchor = () => {
+        let newAnchor = new Set();
+        if (startingSides.top) newAnchor.add("bottom");
+        if (startingSides.bottom) newAnchor.add("top");
+        if (startingSides.left) newAnchor.add("left");
+        if (startingSides.right) newAnchor.add("right");
+        setAnchor(Array.from(newAnchor).join(" "));
     }
 
-    // useEffect(() => {
-    //     console.log(getOffset());
-    // }, [startingSides, cursorPosition])
+    const updateAngle = () => {
+        const startingCorner = { x: startingSides.left ? -50 : 50, y: startingSides.top ? -50 : 50 };
+        const deltaX = cursorPosition.x - startingCorner.x;
+        const deltaY = cursorPosition.y - startingCorner.y;
+        const slope = deltaY / deltaX;
+        const angle = Math.atan(slope) * (180 / Math.PI);
+        setAngle(angle);
+    };
+
+    useEffect(() => {
+        updateOffset();
+        updateAnchor();
+        updateAngle();
+    }, [startingSides, cursorPosition]);
+
     return (
         <div className="poker" ref={containerRef}>
             <table className="area_indicator" style={{ "--vertical_percentage": `${props.verticalCenterSize || 60}%`, "--horizontal_percentage": `${props.horizontalCenterSize || 40}%` } as React.CSSProperties}>
@@ -97,7 +112,7 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
             </table>
             <div className="poker_backface" />
             { Object.values(startingSides).includes(true) && <div className="test_point" style={{ "--x": `${cursorPosition.x + 50}%`, "--y": `${cursorPosition.y + 50}%` } as React.CSSProperties} />}
-            <div className={["poker_frontface", (startingSides.top || startingSides.bottom) ? "flip" : undefined].join(" ")} style={{...offset}}/>
+            <div className={["poker_frontface", (startingSides.top || startingSides.bottom) ? "flip" : undefined].join(" ")} style={Object.assign({}, offset, {transformOrigin: anchor}, {"--angle": angle})}><div /></div>
         </div>
     )
 }
