@@ -14,7 +14,7 @@ import { YahtzeePage } from './components/yahtzee/yahtzeePage';
 import { UseColumnsPage } from './components/useColumns/useColumnsPage';
 import { ProgressPage } from './components/progress/ProgressPage';
 import { PokerPage } from './components/poker/PokerPage';
-// test
+
 export const App = () => {
     const navigate = useNavigate();
     const location = useLocation();
