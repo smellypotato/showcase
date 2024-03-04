@@ -8,8 +8,9 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
     const [offset, setOffset] = useState<{top?: string, bottom?: string, left?: string, right?: string}>({});
     const [anchor, setAnchor] = useState("");
     const [angle, setAngle] = useState(0);
+    const [backfaceClip, setBackfaceClip] = useState("");
     const containerRef = useRef<HTMLDivElement>(null);
-
+    const cardRatio = 5 / 7;
     const centerSize = {horizontal: props.horizontalCenterSize || 40, vertical: props.verticalCenterSize || 60}
 
     const onStart = (e: TouchEvent | MouseEvent) => {
@@ -68,6 +69,11 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
         };
     }, []);
 
+    // when calculation requires x and y, y needs to be normalized
+    const normalizeY = (y: number) => {
+        return y / cardRatio;
+    }
+
     const updateOffset = () => {
         const newOffset: typeof offset = {};
         if (startingSides.top) newOffset.bottom = `${50 - cursorPosition.y}%`;
@@ -90,15 +96,44 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
         const startingCorner = { x: startingSides.left ? -50 : 50, y: startingSides.top ? -50 : 50 };
         const deltaX = cursorPosition.x - startingCorner.x;
         const deltaY = cursorPosition.y - startingCorner.y;
-        const slope = deltaY / deltaX;
-        const angle = Math.atan(slope) * (180 / Math.PI);
+        const slope = normalizeY(deltaY) / deltaX
+        const angle = Math.atan(slope) * (180 / Math.PI) * 2 + 180;
         setAngle(angle);
+        return angle;
     };
+
+    const updateBackfaceClip = (angle: number) => {
+        const clipPoints = ["0% 0%", "100% 0%", "100% 100%", "0% 100%"]; // top right, top left, bottom left, bottom right, because scale(-1);
+        const [x, y] = [50 - cursorPosition.x, 50 + cursorPosition.y];
+        if (startingSides.top && startingSides.right) {
+
+            const newX = (x + normalizeY(y) * Math.tan((90 - angle) * Math.PI / 180));
+            const newY = (normalizeY(y) - x * Math.tan((90 - angle) * Math.PI / 180)) * cardRatio; // * cardRatio to un-normalize Y
+            clipPoints.splice(0, 1, `0% ${newY}%`, `${newX}% 0%`);
+        }
+        else if (startingSides.top && startingSides.left) {
+            const newX = (x + normalizeY(y) * Math.tan((90 - angle) * Math.PI / 180));
+            const newY = (normalizeY(y) - (x) * Math.tan((90 - angle) * Math.PI / 180)) * cardRatio; // * cardRatio to un-normalize Y
+            clipPoints.splice(1, 1, `${newX}% 0%`, `100% ${newY}%`);
+        }
+        else if (startingSides.bottom && startingSides.left) {
+            const newX = (x + normalizeY(y) * Math.tan((90 - angle) * Math.PI / 180));
+            const newY = (normalizeY(y) - x * Math.tan((90 - angle) * Math.PI / 180)) * cardRatio; // * cardRatio to un-normalize Y
+            clipPoints.splice(2, 1, `100% ${newY}%`, `${newX}% 100%`);
+        }
+        else if (startingSides.bottom && startingSides.right) {
+            const newX = (x + normalizeY(y) * Math.tan((90 - angle) * Math.PI / 180));
+            const newY = (normalizeY(y) - x * Math.tan((90 - angle) * Math.PI / 180)) * cardRatio; // * cardRatio to un-normalize Y
+            clipPoints.splice(3, 1, `${newX}% 100%`, `0% ${newY}%`);
+        }
+        setBackfaceClip(clipPoints.join());
+    }
 
     useEffect(() => {
         updateOffset();
         updateAnchor();
-        updateAngle();
+        const angle = updateAngle();
+        updateBackfaceClip(angle);
     }, [startingSides, cursorPosition]);
 
     return (
@@ -110,9 +145,9 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
                     <tr><td/><td/><td/></tr>
                 </tbody>
             </table>
-            <div className="poker_backface" />
-            { Object.values(startingSides).includes(true) && <div className="test_point" style={{ "--x": `${cursorPosition.x + 50}%`, "--y": `${cursorPosition.y + 50}%` } as React.CSSProperties} />}
-            <div className={["poker_frontface", (startingSides.top || startingSides.bottom) ? "flip" : undefined].join(" ")} style={Object.assign({}, offset, {transformOrigin: anchor}, {"--angle": angle})}><div /></div>
+            <div className="poker_backface" style={{"--clip": backfaceClip} as React.CSSProperties}/>
+            { Object.values(startingSides).includes(true) && <div className="test_point" style={{ "--x": `${cursorPosition.x + 50}%`, "--y": `${cursorPosition.y + 50}%` } as React.CSSProperties} /> }
+            { Object.values(startingSides).includes(true) && <div className={["poker_frontface", (startingSides.top || startingSides.bottom) ? "flip" : undefined].join(" ")} style={Object.assign({}, offset, {transformOrigin: anchor}, {"--angle": angle})}><div /></div> }
         </div>
     )
 }
