@@ -107,46 +107,49 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
         const clipPoints = ["0% 0%", "100% 0%", "100% 100%", "0% 100%"]; // top right, top left, bottom left, bottom right, because scale(-1);
         const [x, y] = [50 - cursorPosition.x, 50 + cursorPosition.y];
         angle = Math.abs(angle);
+        const updateClipPoints = (index: number, newPoints: Array<[x: number, y: number]>) => {
+            clipPoints.splice(index, 1, ...newPoints.map(newPoint => `${newPoint[0]}% ${newPoint[1]}%`));
+        }
         if (startingSides.top && startingSides.right) {
-            // angle positive
             const newX = x + normalizeY(y) / Math.tan(angle * Math.PI / 180);
             const newY = (normalizeY(y) - x / Math.tan(angle * Math.PI / 180)) * cardRatio; // * cardRatio to un-normalize Y
-            clipPoints.splice(0, 1, `0% ${newY}%`, `${newX}% 0%`);
+            updateClipPoints(0, [[0, newY], [newX, 0]]);
         }
         else if (startingSides.top && startingSides.left) {
-            // angle negative
             const newX = x - normalizeY(y) / Math.tan(angle * Math.PI / 180);
             const newY = (normalizeY(y) - (100 - x) / Math.tan(angle * Math.PI / 180)) * cardRatio; // * cardRatio to un-normalize Y
-            clipPoints.splice(1, 1, `${newX}% 0%`, `100% ${newY}%`);
+            updateClipPoints(1, [[newX, 0], [100, newY]]);
         }
         else if (startingSides.bottom && startingSides.left) {
-            // angle positive
-            const newX = x + normalizeY(100 - y) / Math.tan(-angle * Math.PI / 180);
+            const newX = x - normalizeY(100 - y) / Math.tan(angle * Math.PI / 180);
             const newY = (normalizeY(y) + (100 - x) / Math.tan(angle * Math.PI / 180)) * cardRatio; // * cardRatio to un-normalize Y
+            updateClipPoints(2, [[100, newY], [newX, 100]]);
             clipPoints.splice(2, 1, `100% ${newY}%`, `${newX}% 100%`);
         }
         else if (startingSides.bottom && startingSides.right) {
-            // angle negative
-            const newX = (x + normalizeY(100 - y) / Math.tan(angle * Math.PI / 180));
+            const newX = x + normalizeY(100 - y) / Math.tan(angle * Math.PI / 180);
             const newY = (normalizeY(y) + x / Math.tan(angle * Math.PI / 180)) * cardRatio; // * cardRatio to un-normalize Y
-            clipPoints.splice(3, 1, `${newX}% 100%`, `0% ${newY}%`);
+            updateClipPoints(3, [[newX, 100], [0, newY]]);
         }
         else if (startingSides.right) {
             const newX = x / 2;
-            clipPoints.splice(0, 1, `${newX}% 0%`);
-            clipPoints.splice(3, 1, `${newX}% 100%`);
+            updateClipPoints(0, [[newX, 0]]);
+            updateClipPoints(3, [[newX, 100]]);
         }
         else if (startingSides.left) {
             const newX = 50 + x / 2;
-            clipPoints.splice(1, 2, `${newX}% 0%`, `${newX}% 100%`);
+            updateClipPoints(1, [[newX, 0]]);
+            updateClipPoints(2, [[newX, 100]]);
         }
         else if (startingSides.top) {
             const newY = y / 2;
-            clipPoints.splice(0, 2, `0% ${newY}%`, `100% ${newY}%`);
+            updateClipPoints(0, [[0, newY]]);
+            updateClipPoints(1, [[100, newY]]);
         }
         else if (startingSides.bottom) {
             const newY = 50 + y / 2;
-            clipPoints.splice(2, 2, `100% ${newY}%`, `0% ${newY}%`);
+            updateClipPoints(2, [[100, newY]]);
+            updateClipPoints(3, [[0, newY]]);
         }
         setBackfaceClip(clipPoints.join());
     }
