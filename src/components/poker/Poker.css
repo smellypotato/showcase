@@ -9,7 +9,6 @@
     height: 100%;
     background: url(./card_back.png) no-repeat center;
     background-size: cover;
-    border-radius: 16px;
     transform: scaleX(-1);
     clip-path: polygon(var(--clip));
 }
@@ -18,6 +17,7 @@
     width: 100%;
     height: 100%;
     border-radius: 16px;
+    /* top: 0; */
     transform: rotate(calc(var(--angle) * 1deg));
     clip-path: polygon(var(--clip));
 }
@@ -26,51 +26,5 @@
     height: 100%;
     background: url(./card_front.png) no-repeat center;
     background-size: cover;
-    outline: 1px solid #F00;
 }
 .poker_frontface.flip > div { transform: scale(-1) }
-.test_point {
-    position: absolute;
-    outline: 8px solid blue;
-    left: var(--x);
-    top: var(--y);
-    z-index: 10;
-}
-/* .test_point::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    height: 100px;
-    width: 1px;
-    background-color: purple;
-    transform-origin: left bottom;
-    transform: rotate(30deg);
-}
-.test_point::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    width: 100px;
-    height: 1px;
-    background-color: purple;
-    transform-origin: left bottom;
-    transform: rotate(-30deg);
-} */
-.area_indicator {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    border-collapse: collapse;
-    border: none;
-    table-layout: fixed;
-    z-index: 2;
-}
-.area_indicator td {
-    border: 1px solid blue;
-}
-.area_indicator tr:nth-child(2) {
-    height: var(--vertical_percentage);
-}
-.area_indicator tr td:nth-child(2) {
-    width: var(--horizontal_percentage);
-}

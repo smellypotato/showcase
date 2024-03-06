@@ -76,17 +76,28 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
         };
     }, []);
 
-    // when calculation requires x and y, y needs to be normalized
+    // when calculation for x requires y, y needs to be normalized
     const normalizeY = (y: number) => {
         return y / cardRatio;
+    }
+    // when calculation for y requires x, x needs to be normalized
+    const normalizeX = (x: number) => {
+        return x * cardRatio;
     }
 
     const updateOffset = () => {
         const newOffset: typeof offset = {};
         if (startingSides.top) newOffset.bottom = `${50 - cursorPosition.y}%`;
         if (startingSides.bottom) newOffset.top = `${cursorPosition.y + 50}%`;
-        if (startingSides.left) newOffset.left = `${cursorPosition.x + 50}%`;
-        if (startingSides.right) newOffset.right = `${50 - cursorPosition.x}%`;
+        if (startingSides.left) {
+            if (startingSides.top || startingSides.bottom) newOffset.left = `${cursorPosition.x + 50}%`;
+            else newOffset.right = `${50 - cursorPosition.x}%`;
+        }
+        if (startingSides.right) {
+            if (startingSides.top || startingSides.bottom) newOffset.right = `${50 - cursorPosition.x}%`;
+            else newOffset.left = `${50 + cursorPosition.x}%`;
+        }
+        if ((startingSides.left || startingSides.right) && !(startingSides.top || startingSides.bottom)) newOffset.top = "0%";
         setOffset({...newOffset});
     };
 
@@ -110,92 +121,110 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
         return angle;
     };
 
+    const changeClipPoints = (clipPoints: Array<string>, index: number, newPoints: Array<[x: number, y: number]>) => {
+        clipPoints.splice(index, 1, ...newPoints.map(newPoint => `${newPoint[0]}% ${newPoint[1]}%`));
+    }
+
     const updateBackfaceClip = (angle: number) => { 
         const clipPoints = ["0% 0%", "100% 0%", "100% 100%", "0% 100%"]; // top right, top left, bottom left, bottom right, because scale(-1);
         const [x, y] = [50 - cursorPosition.x, 50 + cursorPosition.y];
         const slope = Math.abs(angle) * Math.PI / 180;
-        const updateClipPoints = (index: number, newPoints: Array<[x: number, y: number]>) => {
-            clipPoints.splice(index, 1, ...newPoints.map(newPoint => `${newPoint[0]}% ${newPoint[1]}%`));
-        }
         if (startingSides.top && startingSides.right) {
             const newX = x + normalizeY(y) / Math.tan(slope);
             const newY = (normalizeY(y) - x / Math.tan(slope)) * cardRatio; // * cardRatio to un-normalize Y
-            updateClipPoints(0, [[0, newY], [newX, 0]]);
+            changeClipPoints(clipPoints, 0, [[0, newY], [newX, 0]]);
         }
         else if (startingSides.top && startingSides.left) {
             const newX = x - normalizeY(y) / Math.tan(slope);
             const newY = (normalizeY(y) - (100 - x) / Math.tan(slope)) * cardRatio; // * cardRatio to un-normalize Y
-            updateClipPoints(1, [[newX, 0], [100, newY]]);
+            changeClipPoints(clipPoints, 1, [[newX, 0], [100, newY]]);
         }
         else if (startingSides.bottom && startingSides.left) {
             const newX = x - normalizeY(100 - y) / Math.tan(slope);
             const newY = (normalizeY(y) + (100 - x) / Math.tan(slope)) * cardRatio; // * cardRatio to un-normalize Y
-            updateClipPoints(2, [[100, newY], [newX, 100]]);
+            changeClipPoints(clipPoints, 2, [[100, newY], [newX, 100]]);
         }
         else if (startingSides.bottom && startingSides.right) {
             const newX = x + normalizeY(100 - y) / Math.tan(slope);
             const newY = (normalizeY(y) + x / Math.tan(slope)) * cardRatio; // * cardRatio to un-normalize Y
-            updateClipPoints(3, [[newX, 100], [0, newY]]);
+            changeClipPoints(clipPoints, 3, [[newX, 100], [0, newY]]);
         }
         else if (startingSides.right) {
             const newX = x / 2;
-            updateClipPoints(0, [[newX, 0]]);
-            updateClipPoints(3, [[newX, 100]]);
+            changeClipPoints(clipPoints, 0, [[newX, 0]]);
+            changeClipPoints(clipPoints, 3, [[newX, 100]]);
         }
         else if (startingSides.left) {
             const newX = 50 + x / 2;
-            updateClipPoints(1, [[newX, 0]]);
-            updateClipPoints(2, [[newX, 100]]);
+            changeClipPoints(clipPoints, 1, [[newX, 0]]);
+            changeClipPoints(clipPoints, 2, [[newX, 100]]);
         }
         else if (startingSides.top) {
             const newY = y / 2;
-            updateClipPoints(0, [[0, newY]]);
-            updateClipPoints(1, [[100, newY]]);
+            changeClipPoints(clipPoints, 0, [[0, newY]]);
+            changeClipPoints(clipPoints, 1, [[100, newY]]);
         }
         else if (startingSides.bottom) {
             const newY = 50 + y / 2;
-            updateClipPoints(2, [[100, newY]]);
-            updateClipPoints(3, [[0, newY]]);
+            changeClipPoints(clipPoints, 2, [[100, newY]]);
+            changeClipPoints(clipPoints, 3, [[0, newY]]);
         }
         setBackfaceClip(clipPoints.join());
     }
 
     const updateFrontfaceClip = (angle: number) => {
         const clipPoints = ["0% 0%", "100% 0%", "100% 100%", "0% 100%"]; // bottom right, bottom left, top left, top right;
-        const y = 50 + cursorPosition.y;
-        const updateClipPoints = (index: number, newPoints: Array<[x: number, y: number]>) => {
-            clipPoints.splice(index, 1, ...newPoints.map(newPoint => `${newPoint[0]}% ${newPoint[1]}%`));
-        }
+        const [x, y] = [50 - cursorPosition.x, 50 + cursorPosition.y];
         const slope = Math.abs(angle) * Math.PI / 180;
         // must keep one adjacent point
         if (startingSides.top && startingSides.right) {
             // cursor point: 100, 100
             const newX = 100 - normalizeY(y) / Math.sin(slope);
-            const newY = 100 - (100 - newX) * Math.tan(slope / 2) * cardRatio;
-            updateClipPoints(0, [[newX, 100]]); // y reference previous
-            updateClipPoints(1, [[100, newY]]); // x reference next
+            const newY = 100 - normalizeX(100 - newX) * Math.tan(slope / 2);
+            changeClipPoints(clipPoints, 0, [[newX, 100]]); // y reference previous
+            changeClipPoints(clipPoints, 1, [[100, newY]]); // x reference next
 
         }
         else if (startingSides.top && startingSides.left) {
             // cursor point is 0, 100
             const newX = normalizeY(y) / Math.sin(slope);
-            const newY = 100 - newX * Math.tan(slope / 2) * cardRatio;
-            updateClipPoints(1, [[0, newY]]); // x reference previous
-            updateClipPoints(2, [[newX, 100]]); // y reference next
+            const newY = 100 - normalizeX(newX) * Math.tan(slope / 2);
+            changeClipPoints(clipPoints, 1, [[0, newY]]); // x reference previous
+            changeClipPoints(clipPoints, 2, [[newX, 100]]); // y reference next
         }
         else if (startingSides.bottom && startingSides.left) {
             // cursor point is 0, 0
             const newX = normalizeY(100 - y) / Math.sin(slope);
-            const newY = newX * Math.tan(slope / 2) * cardRatio;
-            updateClipPoints(2, [[newX, 0]]); // y reference previous
-            updateClipPoints(3, [[0, newY]]); // x reference next
+            const newY = normalizeX(newX) * Math.tan(slope / 2);
+            changeClipPoints(clipPoints, 2, [[newX, 0]]); // y reference previous
+            changeClipPoints(clipPoints, 3, [[0, newY]]); // x reference next
         }
         else if (startingSides.bottom && startingSides.right) {
             // cursor point is 100, 0
             const newX = 100 - normalizeY(100 - y) / Math.sin(slope);
-            const newY = (100 - newX) * Math.tan(slope / 2) * cardRatio;
-            updateClipPoints(3, [[100, newY]]); // x reference previous
-            updateClipPoints(0, [[newX, 0]]); // y reference next
+            const newY = normalizeX(100 - newX) * Math.tan(slope / 2);
+            changeClipPoints(clipPoints, 3, [[100, newY]]); // x reference previous
+            changeClipPoints(clipPoints, 0, [[newX, 0]]); // y reference next
+        }
+        else if (startingSides.left) {
+            const newX = 50 + x / 2;
+            changeClipPoints(clipPoints, 0, [[newX, 0]]);
+            changeClipPoints(clipPoints, 3, [[newX, 100]]);
+        }
+        else if (startingSides.right) {
+            const newX = x / 2;
+            changeClipPoints(clipPoints, 1, [[newX, 0]]);
+            changeClipPoints(clipPoints, 2, [[newX, 100]]);
+        }
+        else if (startingSides.top) {
+            const newY = 100 - y / 2;
+            changeClipPoints(clipPoints, 0, [[0, newY]]);
+            changeClipPoints(clipPoints, 1, [[100, newY]])
+        }
+        else if (startingSides.bottom) {
+            const newY = 50 - y / 2;
+            changeClipPoints(clipPoints, 2, [[100, newY]]);
+            changeClipPoints(clipPoints, 3, [[0, newY]])
         }
         setFrontfaceClip(clipPoints.join());
     }
@@ -210,15 +239,7 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
 
     return (
         <div className="poker" ref={containerRef}>
-            <table className="area_indicator" style={{ "--vertical_percentage": `${props.verticalCenterSize || 60}%`, "--horizontal_percentage": `${props.horizontalCenterSize || 40}%` } as React.CSSProperties}>
-                <tbody>
-                    <tr><td/><td/><td/></tr>
-                    <tr><td/><td/><td/></tr>
-                    <tr><td/><td/><td/></tr>
-                </tbody>
-            </table>
             <div className="poker_backface" style={{"--clip": backfaceClip} as React.CSSProperties}/>
-            { Object.values(startingSides).includes(true) && <div className="test_point" style={{ "--x": `${cursorPosition.x + 50}%`, "--y": `${cursorPosition.y + 50}%` } as React.CSSProperties} /> }
             { Object.values(startingSides).includes(true) && <div className={["poker_frontface", (startingSides.top || startingSides.bottom) ? "flip" : undefined].join(" ")} style={Object.assign({}, offset, {transformOrigin: anchor}, {"--angle": angle, "--clip": frontfaceClip})}><div /></div> }
         </div>
     )
