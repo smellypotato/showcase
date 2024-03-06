@@ -7,7 +7,7 @@
 .poker_backface {
     width: 100%;
     height: 100%;
-    background: url(./card.png) no-repeat center;
+    background: url(./card_back.png) no-repeat center;
     background-size: cover;
     border-radius: 16px;
     transform: scaleX(-1);
@@ -19,13 +19,14 @@
     height: 100%;
     border-radius: 16px;
     transform: rotate(calc(var(--angle) * 1deg));
-    opacity: 0.75;
+    clip-path: polygon(var(--clip));
 }
 .poker_frontface > div {
     width: 100%;
     height: 100%;
-    background: url(./card.png) no-repeat center;
+    background: url(./card_front.png) no-repeat center;
     background-size: cover;
+    outline: 1px solid #F00;
 }
 .poker_frontface.flip > div { transform: scale(-1) }
 .test_point {
@@ -35,7 +36,7 @@
     top: var(--y);
     z-index: 10;
 }
-.test_point::before {
+/* .test_point::before {
     content: "";
     position: absolute;
     bottom: 0;
@@ -54,7 +55,7 @@
     background-color: purple;
     transform-origin: left bottom;
     transform: rotate(-30deg);
-}
+} */
 .area_indicator {
     width: 100%;
     height: 100%;
