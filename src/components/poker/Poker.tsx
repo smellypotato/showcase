@@ -49,7 +49,7 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
         const client = 'touches' in e ? {x: e.touches[0].clientX, y: e.touches[0].clientY} : {x: e.clientX, y: e.clientY}
         const offset = {x: client.x - pokerRect.left - containerCenter.x, y: client.y - pokerRect.top - containerCenter.y};
         const percentage = {x: ((offset.x + containerCenter.x) / pokerRect.width) * 100, y: ((offset.y + containerCenter.y) / pokerRect.height) * 100};
-        const cursor = { x: Math.max(Math.min(percentage.x - 50, 50), -50), y: Math.max(Math.min(percentage.y - 50, 50), -50) };
+        const cursor = { x: boundValue(percentage.x - 50, 49.999, -49.999), y: boundValue(percentage.y - 50, 49.999, -49.999) };
         setCursorPosition({...cursor});
         return {...cursor};
     };
@@ -85,6 +85,10 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
         return x * cardRatio;
     }
 
+    const boundValue = (value: number, max: number, min: number) => {
+        return Math.max(Math.min(value, max), min);
+    }
+
     const updateOffset = () => {
         const newOffset: typeof offset = {};
         if (startingSides.top) newOffset.bottom = `${50 - cursorPosition.y}%`;
@@ -114,9 +118,8 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
         const startingCorner = { x: startingSides.left ? -50 : startingSides.right ? 50 : cursorPosition.x, y: startingSides.top ? -50 : startingSides.bottom ? 50 : cursorPosition.y };
         const deltaX = cursorPosition.x - startingCorner.x;
         const deltaY = cursorPosition.y - startingCorner.y;
-        const slope = normalizeY(deltaY) / deltaX
-        let angle = Math.atan(slope) * (180 / Math.PI) * 2 + 180 * Math.sign(-slope);
-        angle = Math.max(Math.min(Math.abs(angle), 179.999), 0.001) * (angle >= 0 ? 1 : -1);
+        const slope = normalizeY(deltaY) / deltaX;
+        const angle = Math.atan(slope) * (180 / Math.PI) * 2 + 180 * Math.sign(-slope);
         setAngle(angle);
         return angle;
     };
@@ -240,7 +243,7 @@ export const Poker = (props: {verticalCenterSize?: number, horizontalCenterSize?
     return (
         <div className="poker" ref={containerRef}>
             <div className="poker_backface" style={{"--clip": backfaceClip} as React.CSSProperties}/>
-            { Object.values(startingSides).includes(true) && <div className={["poker_frontface", (startingSides.top || startingSides.bottom) ? "flip" : undefined].join(" ")} style={Object.assign({}, offset, {transformOrigin: anchor}, {"--angle": angle, "--clip": frontfaceClip})}><div /></div> }
+            { !isNaN(angle) && <div className={["poker_frontface", (startingSides.top || startingSides.bottom) ? "flip" : undefined].join(" ")} style={Object.assign({}, offset, {transformOrigin: anchor}, {"--angle": angle, "--clip": frontfaceClip})}><div /></div> }
         </div>
     )
 }
