@@ -6,7 +6,7 @@
 }
 
 #poker_container {
-    --height: 400px;
+    --height: 600px;
     --aspect_ratio: 5 / 7;
 }
 #poker_container.vertical {
