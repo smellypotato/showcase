@@ -9,29 +9,61 @@
     height: 100%;
     border-radius: var(--corner);
     background: #FFF;
-    padding: var(--vertical_padding) var(--horizontal_padding);
     font-family: poker_font;
     display: grid;
+    
+}
+.poker[aria-orientation="vertical"] {
+    padding: var(--vertical_padding) var(--horizontal_padding);
     grid-template-columns: 14% 1fr 14%;
+}
+.poker[aria-orientation="horizontal"] {
+    padding: var(--horizontal_padding) var(--vertical_padding);
+    grid-template-rows: 14% 1fr 14%;
 }
 .poker .inverse { transform: rotate(180deg) }
 .poker > .corner {
-    width: 100%;
-    display: grid;
-    grid-template-rows: 15% 10%;
-    grid-row-gap: 2%;
+    display: flex;
+    --rank_height: 15%;
+    --suit_height: 10%;
 }
-.poker > .corner > * {
-    width: 100%;
-    height: 100%;
+.poker[aria-orientation="vertical"] > .corner {
+    flex-direction: column;
+    row-gap: 2%;
 }
+.poker[aria-orientation="horizontal"] > .corner {
+    flex-direction: row-reverse;
+    column-gap: 2%;
+}
+.poker[aria-orientation="vertical"] > .corner > div:first-child { height: var(--rank_height) }
+.poker[aria-orientation="vertical"] > .corner > div:last-child { height: var(--suit_height) }
+.poker[aria-orientation="horizontal"] > .corner > div:first-child { width: var(--rank_height) }
+.poker[aria-orientation="horizontal"] > .corner > div:last-child { width: var(--suit_height) }
 .poker > .suit_display {
     display: grid;
     place-items: center;
+    --vertical_gap: 8%;
+    
+}
+.poker > .suit_display.number {
+    --vertical_padding: 20%;
+    --horizontal_padding: 10%;
+}
+.poker > .suit_display.face {
+    --vertical_padding: 20%;
+    --horizontal_padding: 5%;
+}
+.poker[aria-orientation="vertical"] > .suit_display {
     grid-template-columns: repeat(3, 1fr);
-    grid-column-gap: 8%;
+    grid-column-gap: var(--vertical_gap);
     grid-template-rows: repeat(4, 1fr);
-    padding: 20% 10%;
+    padding: var(--vertical_padding) var(--horizontal_padding);
+}
+.poker[aria-orientation="horizontal"] > .suit_display {
+    grid-template-rows: repeat(3, 1fr);
+    grid-row-gap: var(--vertical_gap);
+    grid-template-columns: repeat(4, 1fr);
+    padding: calc(var(--horizontal_padding) / 2) calc(var(--vertical_padding) / 2); /* why need to / 2? */
 }
 .poker.red :is(.suit, .rank) {
     filter: invert(15%) sepia(100%) saturate(2691%) hue-rotate(345deg) brightness(103%) contrast(91%);
@@ -41,51 +73,123 @@
     height: 100%;
     background-position: center;
 }
-.poker > .suit_display > .suit.p_1 { grid-area: 1 / 1 / 2 / 2 }
-.poker > .suit_display > .suit.p_2 { grid-area: 1 / -2 / 2 / -1 }
-.poker > .suit_display > .suit.p_3 { grid-area: 2 / 1 / 3 / 2 }
-.poker > .suit_display > .suit.p_4 { grid-area: 2 / -2 / 3 / -1 }
-.poker > .suit_display > .suit.p_5 { grid-area: 2 / 1 / 4 / 2 }
-.poker > .suit_display > .suit.p_6 { grid-area: 2 / -2 / 4 / -1 }
-.poker > .suit_display > .suit.p_7 { grid-area: 3 / 1 / -2 / 2 }
-.poker > .suit_display > .suit.p_8 { grid-area: 3 / -2 / -2 / -1 }
-.poker > .suit_display > .suit.p_9 { grid-area: -2 / 1 / -1 / 2 }
-.poker > .suit_display > .suit.p_10 { grid-area: -2 / -2 / -1 / -1 }
-.poker > .suit_display > .suit.p_11 { grid-area: 1 / 2 / 2 / 3 }
-.poker > .suit_display > .suit.p_12 {
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_1 { grid-area: 1 / 1 / 2 / 2 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_2 { grid-area: 1 / -2 / 2 / -1 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_3 { grid-area: 2 / 1 / 3 / 2 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_4 { grid-area: 2 / -2 / 3 / -1 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_5 { grid-area: 2 / 1 / 4 / 2 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_6 { grid-area: 2 / -2 / 4 / -1 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_7 { grid-area: 3 / 1 / -2 / 2 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_8 { grid-area: 3 / -2 / -2 / -1 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_9 { grid-area: -2 / 1 / -1 / 2 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_10 { grid-area: -2 / -2 / -1 / -1 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_11 { grid-area: 1 / 2 / 2 / 3 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_12 {
     grid-area: 1 / 2 / 3 / -2;
     height: 82.5%;
     align-self: end;
 }
-.poker > .suit_display > .suit.p_13 { grid-area: 2 / 2 / -2 / -2 }
-.poker > .suit_display > .suit.p_13:first-child:last-child { width: 150% }
-.poker > .suit_display > .suit.p_14 {
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_13 { grid-area: 2 / 2 / -2 / -2 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_13:first-child:last-child { width: 150% }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_14 {
     grid-area: 3 / 2 / -1 / -2;
     height: 82.5%;
     align-self: start;
 }
-.poker > .suit_display > .suit.p_15 { grid-area: -2 / 2 / -1 / 3 }
+.poker[aria-orientation="vertical"] > .suit_display > .suit.p_15 { grid-area: -2 / 2 / -1 / 3 }
 
-.poker [class*="svg_"] {
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_1 { grid-area: 1 / -2 / 2 / -1 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_2 { grid-area: -2 / -2 / -1 / -1 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_3 { grid-area: 1 / -3 / 2 / -2 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_4 { grid-area: -2 / -3 / -1 / -2 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_5 { grid-area: 1 / -2 / 2 / 2 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_6 { grid-area: -2 / -2 / -1 / 2 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_7 { grid-area: 1 / 2 / 2 / 3 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_8 { grid-area: -2 / 2 / -1 / 3 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_9 { grid-area: 1 / 1 / 2 / 2 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_10 { grid-area: -2 / 1 / -1 / 2 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_11 { grid-area: 2 / -2 / -2 / -1 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_12 {
+    grid-area: 2 / -3 / -2 / -1;
+    width: 82.5%;
+    justify-self: start;
+}
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_13 { grid-area: 2 / -2 / -2 / 2 }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_13:first-child:last-child { height: 150% }
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_14 {
+    grid-area: 2 / 1 / -2 / 3;
+    width: 82.5%;
+    justify-self: end;
+}
+.poker[aria-orientation="horizontal"] > .suit_display > .suit.p_15 { grid-area: 2 / 1 / -2 / 2 }
+.poker > .suit_display > [class*="png_poker_"] {
+    width: 100%;
+    height: 100%;
+    grid-area: 1 / 1 / -1 / -1;
+    background-position: center;
+}
+.poker :is([class*="svg_"], [class*="png_"]) {
     background-repeat: no-repeat;
     background-size: contain;
 }
 .poker [class*="svg_"].rank { background-position: center bottom }
 .poker > .corner > [class*="svg_"].suit { background-position: center top }
-.svg_poker_1 { background-image: url(./card_assets/1.svg) }
-.svg_poker_2 { background-image: url(./card_assets/2.svg) }
-.svg_poker_3 { background-image: url(./card_assets/3.svg) }
-.svg_poker_4 { background-image: url(./card_assets/4.svg) }
-.svg_poker_5 { background-image: url(./card_assets/5.svg) }
-.svg_poker_6 { background-image: url(./card_assets/6.svg) }
-.svg_poker_7 { background-image: url(./card_assets/7.svg) }
-.svg_poker_8 { background-image: url(./card_assets/8.svg) }
-.svg_poker_9 { background-image: url(./card_assets/9.svg) }
-.svg_poker_10 { background-image: url(./card_assets/10.svg) }
-.svg_poker_11 { background-image: url(./card_assets/11.svg) }
-.svg_poker_12 { background-image: url(./card_assets/12.svg) }
-.svg_poker_13 { background-image: url(./card_assets/13.svg) }
-.svg_poker_100 { background-image: url(./card_assets/100.svg) }
-.svg_poker_200 { background-image: url(./card_assets/200.svg) }
-.svg_poker_300 { background-image: url(./card_assets/300.svg) }
-.svg_poker_400 { background-image: url(./card_assets/400.svg) }
+.svg_poker_vertical_1 { background-image: url(./card_assets/vertical/1.svg) }
+.svg_poker_vertical_2 { background-image: url(./card_assets/vertical/2.svg) }
+.svg_poker_vertical_3 { background-image: url(./card_assets/vertical/3.svg) }
+.svg_poker_vertical_4 { background-image: url(./card_assets/vertical/4.svg) }
+.svg_poker_vertical_5 { background-image: url(./card_assets/vertical/5.svg) }
+.svg_poker_vertical_6 { background-image: url(./card_assets/vertical/6.svg) }
+.svg_poker_vertical_7 { background-image: url(./card_assets/vertical/7.svg) }
+.svg_poker_vertical_8 { background-image: url(./card_assets/vertical/8.svg) }
+.svg_poker_vertical_9 { background-image: url(./card_assets/vertical/9.svg) }
+.svg_poker_vertical_10 { background-image: url(./card_assets/vertical/10.svg) }
+.svg_poker_vertical_11 { background-image: url(./card_assets/vertical/11.svg) }
+.svg_poker_vertical_12 { background-image: url(./card_assets/vertical/12.svg) }
+.svg_poker_vertical_13 { background-image: url(./card_assets/vertical/13.svg) }
+.svg_poker_vertical_100 { background-image: url(./card_assets/vertical/100.svg) }
+.svg_poker_vertical_200 { background-image: url(./card_assets/vertical/200.svg) }
+.svg_poker_vertical_300 { background-image: url(./card_assets/vertical/300.svg) }
+.svg_poker_vertical_400 { background-image: url(./card_assets/vertical/400.svg) }
+.png_poker_vertical_111 { background-image: url(./card_assets/vertical/111.png) }
+.png_poker_vertical_112 { background-image: url(./card_assets/vertical/112.png) }
+.png_poker_vertical_113 { background-image: url(./card_assets/vertical/113.png) }
+.png_poker_vertical_211 { background-image: url(./card_assets/vertical/111.png) }
+.png_poker_vertical_212 { background-image: url(./card_assets/vertical/112.png) }
+.png_poker_vertical_213 { background-image: url(./card_assets/vertical/113.png) }
+.png_poker_vertical_311 { background-image: url(./card_assets/vertical/311.png) }
+.png_poker_vertical_312 { background-image: url(./card_assets/vertical/312.png) }
+.png_poker_vertical_313 { background-image: url(./card_assets/vertical/313.png) }
+.png_poker_vertical_411 { background-image: url(./card_assets/vertical/411.png) }
+.png_poker_vertical_412 { background-image: url(./card_assets/vertical/412.png) }
+.png_poker_vertical_413 { background-image: url(./card_assets/vertical/413.png) }
+
+.svg_poker_horizontal_1 { background-image: url(./card_assets/horizontal/1.svg) }
+.svg_poker_horizontal_2 { background-image: url(./card_assets/horizontal/2.svg) }
+.svg_poker_horizontal_3 { background-image: url(./card_assets/horizontal/3.svg) }
+.svg_poker_horizontal_4 { background-image: url(./card_assets/horizontal/4.svg) }
+.svg_poker_horizontal_5 { background-image: url(./card_assets/horizontal/5.svg) }
+.svg_poker_horizontal_6 { background-image: url(./card_assets/horizontal/6.svg) }
+.svg_poker_horizontal_7 { background-image: url(./card_assets/horizontal/7.svg) }
+.svg_poker_horizontal_8 { background-image: url(./card_assets/horizontal/8.svg) }
+.svg_poker_horizontal_9 { background-image: url(./card_assets/horizontal/9.svg) }
+.svg_poker_horizontal_10 { background-image: url(./card_assets/horizontal/10.svg) }
+.svg_poker_horizontal_11 { background-image: url(./card_assets/horizontal/11.svg) }
+.svg_poker_horizontal_12 { background-image: url(./card_assets/horizontal/12.svg) }
+.svg_poker_horizontal_13 { background-image: url(./card_assets/horizontal/13.svg) }
+.svg_poker_horizontal_100 { background-image: url(./card_assets/horizontal/100.svg) }
+.svg_poker_horizontal_200 { background-image: url(./card_assets/horizontal/200.svg) }
+.svg_poker_horizontal_300 { background-image: url(./card_assets/horizontal/300.svg) }
+.svg_poker_horizontal_400 { background-image: url(./card_assets/horizontal/400.svg) }
+.png_poker_horizontal_111 { background-image: url(./card_assets/horizontal/111.png) }
+.png_poker_horizontal_112 { background-image: url(./card_assets/horizontal/112.png) }
+.png_poker_horizontal_113 { background-image: url(./card_assets/horizontal/113.png) }
+.png_poker_horizontal_211 { background-image: url(./card_assets/horizontal/111.png) }
+.png_poker_horizontal_212 { background-image: url(./card_assets/horizontal/112.png) }
+.png_poker_horizontal_213 { background-image: url(./card_assets/horizontal/113.png) }
+.png_poker_horizontal_311 { background-image: url(./card_assets/horizontal/311.png) }
+.png_poker_horizontal_312 { background-image: url(./card_assets/horizontal/312.png) }
+.png_poker_horizontal_313 { background-image: url(./card_assets/horizontal/313.png) }
+.png_poker_horizontal_411 { background-image: url(./card_assets/horizontal/411.png) }
+.png_poker_horizontal_412 { background-image: url(./card_assets/horizontal/412.png) }
+.png_poker_horizontal_413 { background-image: url(./card_assets/horizontal/413.png) }

@@ -15,7 +15,7 @@ const POINTS = [
 ]
 const INVERSE = [7, 8, 9, 10, 14, 15];
 
-export const Poker = (props: {cardValue: number}) => {
+export const Poker = (props: {cardValue: number, rotated?: boolean}) => {
     const pokerRef = useRef<HTMLElement>(null);
     const [borderRadius, setBorderRadius] = useState(0);
 
@@ -31,23 +31,23 @@ export const Poker = (props: {cardValue: number}) => {
     }, [])
 
     const suitDisplayClass = useCallback((index: number) => {
-        const className = ["suit", `svg_poker_${suit(props.cardValue)}`, `p_${index}`];
+        const className = ["suit", `svg_poker_${props.rotated ? "horizontal" : "vertical"}_${suit(props.cardValue)}`, `p_${index}`];
         INVERSE.includes(index) && className.push("inverse");
         return className.join(" ");
-    }, [props.cardValue]);
+    }, [props.cardValue, props.rotated]);
 
     return (
-        <article className={`poker ${Math.floor(props.cardValue / 100) % 2 === 1 ? "black" : "red"}`} style={{ "--corner": `${borderRadius}px`} as React.CSSProperties}ref={pokerRef}>
+        <article className={`poker ${Math.floor(props.cardValue / 100) % 2 === 1 ? "black" : "red"}`} style={{ "--corner": `${borderRadius}px`} as React.CSSProperties} aria-orientation={props.rotated ? "horizontal" : "vertical"} ref={pokerRef}>
             <div className="corner">
-                <div className={`rank svg_poker_${props.cardValue % 100}`} />
-                <div className={`suit svg_poker_${suit(props.cardValue)}`} />
+                <div className={`rank svg_poker_${props.rotated ? "horizontal" : "vertical"}_${props.cardValue % 100}`} />
+                <div className={`suit svg_poker_${props.rotated ? "horizontal" : "vertical"}_${suit(props.cardValue)}`} />
             </div>
-            <div className="suit_display">
-                {POINTS[props.cardValue % 100 - 1].map(p => <div className={suitDisplayClass(p)}/>)}
+            <div className={`suit_display ${props.cardValue % 100 <= 10 ? "number" : "face"}`} >
+                {props.cardValue % 100 <= 10 ? POINTS[props.cardValue % 100 - 1].map(p => <div className={suitDisplayClass(p)}/>) : <div className={`png_poker_${props.rotated ? "horizontal" : "vertical"}_${props.cardValue}`}></div>}
             </div>
             <div className="corner inverse">
-                <div className={`rank svg_poker_${props.cardValue % 100}`} />
-                <div className={`suit svg_poker_${suit(props.cardValue)}`} />
+                <div className={`rank svg_poker_${props.rotated ? "horizontal" : "vertical"}_${props.cardValue % 100}`} />
+                <div className={`suit svg_poker_${props.rotated ? "horizontal" : "vertical"}_${suit(props.cardValue)}`} />
             </div>
         </article>
     )

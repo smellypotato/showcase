@@ -3,6 +3,7 @@
     flex-direction: column;
     align-items: center;
     row-gap: 64px;
+    background-color: #888;
 }
 
 #poker_container {
