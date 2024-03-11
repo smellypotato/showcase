@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import "./PokerFlipper.css";
-import { Poker } from "./Poker";
 
 const defaultStartingSides = {left: false, top: false, right: false, bottom: false};
-export const PokerFlipper = (props: {cardValue: number, rotated?: boolean, verticalCenterSize?: number, horizontalCenterSize?: number, onRotate?: () => void}) => {
+export const PokerFlipper = (props: {children: JSX.Element, rotated?: boolean, verticalCenterSize?: number, horizontalCenterSize?: number, onRotate?: () => void}) => {
     const [cursorPosition, setCursorPosition] = useState({x: 0, y: 0});
     const [startingSides, setStartingSides] = useState({...defaultStartingSides});
     const [offset, setOffset] = useState<{top?: string, bottom?: string, left?: string, right?: string}>({});
@@ -244,7 +243,7 @@ export const PokerFlipper = (props: {cardValue: number, rotated?: boolean, verti
     return (
         <div className="poker_flipper" ref={containerRef}>
             <div className="poker_backface" style={{"--clip": backfaceClip} as React.CSSProperties}/>
-            { !isNaN(angle) && <div className={["poker_frontface", (startingSides.top || startingSides.bottom) ? "flip" : undefined].join(" ")} style={Object.assign({}, offset, {transformOrigin: anchor}, {"--angle": angle, "--clip": frontfaceClip})}><Poker rotated={props.rotated} cardValue={props.cardValue}/></div> }
+            { !isNaN(angle) && <div className={["poker_frontface", (startingSides.top || startingSides.bottom) ? "flip" : undefined].join(" ")} style={Object.assign({}, offset, {transformOrigin: anchor}, {"--angle": angle, "--clip": frontfaceClip})}>{props.children}</div> }
             { props.onRotate && !Object.values(startingSides).includes(true) && <button className="poker_rotate" onClick={props.onRotate}>Rotate</button>}
         </div>
     )
